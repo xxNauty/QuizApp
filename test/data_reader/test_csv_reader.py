@@ -1,9 +1,10 @@
-import logging
 import os
+import logging
 
 from data_reader import csv_reader
 
 EXISTING_FILE = "test/data_reader/data.csv"
+
 CONTENT_OF_EXISTING_FILE = """id,name,email,phone,company,created_at
 1,Alice Johnson,alice.johnson@example.com,555-0101,Acme Corp,2025-01-15T09:12:34Z
 2,Bob Smith,bob.smith@example.net,555-0102,Smith LLC,2025-02-20T14:05:10Z
@@ -21,7 +22,7 @@ def test_for_existing_file(caplog) -> None:
     with caplog.at_level(logging.INFO):
         content = csv_reader.read_file(EXISTING_FILE, encoding='cp1252')
 
-    assert "Questions read successfully from the data.csv file, there are 10 questions" in caplog.messages
+    assert "Questions read successfully from the data.csv file(CSV), there are 10 questions" in caplog.messages
 
     assert type(content) == list
     assert len(content) == 10
