@@ -7,8 +7,6 @@ jobs:
   tests:
     name: Test on Python
     runs-on: ubuntu-latest
-#    strategy:
-#      python-version: 3.13
 
     steps:
       - name: Checkout
