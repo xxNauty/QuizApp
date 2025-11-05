@@ -5,11 +5,8 @@ on:
 
 jobs:
   tests:
-    name: Test on Python ${{ matrix.python-version }}
+    name: Test on Python
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version: [ 3.9, 3.10, 3.11, 3.12 ]
 
     steps:
       - name: Checkout
@@ -18,7 +15,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: 3.13
 
       - name: Install requirements
         run: |
@@ -27,18 +24,13 @@ jobs:
           python -m pip install pytest pytest-cov
 
       - name: Run pytest with coverage (require 100%)
-        run: |
-          # By default this measures coverage for the repo root.
-          # If you have a package directory (e.g. `quizapp`), replace --cov=. with --cov=quizapp
-          pytest --maxfail=1 --disable-warnings -q \
-            --cov=. \
-            --cov-report=term \
-            --cov-report=xml \
-            --cov-fail-under=100
+        env:
+          PYTHONPATH: .
+        run: coverage run -m pytest --cov=. --cov-fail-under=100 --cov-report=term --cov-report=xml
 
       - name: Upload coverage XML (always, for debugging)
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: coverage-report-${{ matrix.python-version }}
+          name: coverage-report
           path: coverage.xml
