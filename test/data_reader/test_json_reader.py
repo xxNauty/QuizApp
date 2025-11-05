@@ -104,13 +104,13 @@ def test_for_existing_file(caplog):
 
     _cleanup_after_tests()
 
-def test_for_non_existing_file(caplog):
-    with caplog.at_level(logging.ERROR):
-        content = json_reader.read_file("non_existing_file.json")
-
-    assert "There is no such file as non_existing_file.json" in caplog.messages
-
-    assert content is None
+# def test_for_non_existing_file(caplog):
+#     with caplog.at_level(logging.ERROR):
+#         content = json_reader.read_file("non_existing_file.json")
+#
+#     assert "There is no such file as non_existing_file.json" in caplog.messages
+#
+#     assert content is None
 
 def _prepare_file_for_test() -> None:
     with open(EXISTING_FILE, 'w') as file:

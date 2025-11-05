@@ -28,7 +28,7 @@ jobs:
       - name: Run pytest with coverage (require 100%)
         env:
           PYTHONPATH: .
-        run: coverage run -m pytest --cov=. --cov-fail-under=100
+        run: coverage run -m pytest --cov=. --cov-fail-under=100 --cov-report=term --cov-report=xml
 
       - name: Upload coverage XML (always, for debugging)
         if: always()
