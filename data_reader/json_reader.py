@@ -19,7 +19,6 @@ def read_file(filename: str, encoding: str = 'utf8') -> list[dict]|None:
         logging.error("There is no such file as %s", filename)
         return None
 
-
 # questions = read_file("../data/pozwolenie-na-posiadanie-broni-palnej.json")
 #
 # for question in questions:
