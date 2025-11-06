@@ -11,6 +11,7 @@ def generate(available_questions: list, number_of_questions) -> list[dict]:
         ids_of_questions.add(random.randint(0, len(available_questions) - 1))
 
     questions = []
+    logging.info("The question drawing begins")
     for id_of_questions in ids_of_questions:
         logging.info(f"Chosen question number {id_of_questions + 1}")
         questions.append(available_questions[id_of_questions])
