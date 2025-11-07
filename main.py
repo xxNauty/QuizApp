@@ -49,20 +49,40 @@ def play():
         print("c) " + quiz[i]['ODP_C'])
         print()
         choice = input("Choose correct answer (a/b/c):")
-        score.append((quiz[i]['PYTANIE'], choice, choice.upper() == quiz[i]['POPRAWNA'], quiz[i]['POPRAWNA']))
+        chosen_answer = ''
+        match choice:
+            case 'a':
+                chosen_answer = quiz[i]['ODP_A']
+            case 'b':
+                chosen_answer = quiz[i]['ODP_B']
+            case 'c':
+                chosen_answer = quiz[i]['ODP_C']
+
+        correct_answer = ''
+        match quiz[i]['POPRAWNA']:
+            case 'a':
+                chosen_answer = quiz[i]['ODP_A']
+            case'b':
+                chosen_answer = quiz[i]['ODP_B']
+            case 'c':
+                chosen_answer = quiz[i]['ODP_C']
+
+        score.append((quiz[i]['PYTANIE'], chosen_answer, choice.upper() == quiz[i]['POPRAWNA'], correct_answer))
         if choice.upper() == quiz[i]['POPRAWNA']:
             correct_answers += 1
 
     if correct_answers >= minimum_to_pass:
-        print("Congratulations! You passed!\nHere are your results:")
+        print(f"Congratulations! You passed!({correct_answers}/{number_of_questions})\nHere are your results:")
+    else:
+        print(f"You failed, your score is {correct_answers}/{number_of_questions} but you need to have at least {minimum_to_pass} correct answers to pass")
 
     for i, single_result in enumerate(score):
-        question, choice, is_correct, correct = single_result
+        question, chosen_answer, is_correct, correct_answer = single_result
         print(f"Question number {i}: {question}")
-        print(f"Your choice: {choice}")
+        print(f"Your choice: {chosen_answer}")
         if is_correct:
             print("Your answer is correct!")
         else:
-            print(f"Correct answer: {correct}")
+            print(f"Correct answer: {correct_answer}")
 
 play()
