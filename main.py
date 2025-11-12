@@ -1,9 +1,8 @@
-import os.path
-
 import yaml
 import logging
 import quiz_generator
 
+from os import path
 from data_reader import csv_reader, json_reader
 
 def read_configuration_of_quiz(directory_of_data) -> tuple[int, int]:
@@ -12,8 +11,6 @@ def read_configuration_of_quiz(directory_of_data) -> tuple[int, int]:
             data = yaml.load(file, Loader=yaml.SafeLoader)
             number_of_questions = data['number_of_questions']
             minimum_to_pass = data['minimum_to_pass']
-            # number_of_questions = 5
-            # minimum_to_pass = 3
 
             file.close()
     except FileNotFoundError:
@@ -25,9 +22,9 @@ def read_configuration_of_quiz(directory_of_data) -> tuple[int, int]:
     return number_of_questions, minimum_to_pass
 
 def read_question_database(directory_of_data) -> list|None:
-    if os.path.exists(directory_of_data + "data.json"):
+    if path.exists(directory_of_data + "data.json"):
         questions = json_reader.read_file(directory_of_data + "data.json")
-    elif os.path.exists(directory_of_data + "data.csv"):
+    elif path.exists(directory_of_data + "data.csv"):
         questions = csv_reader.read_file(directory_of_data + "data.csv")
     else:
         logging.error("There is no file with questions")

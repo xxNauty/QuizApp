@@ -2,11 +2,11 @@
 
 import os
 import json
-import types
-import builtins
-import logging
-import pytest
 import main
+import types
+import pytest
+import logging
+import builtins
 
 # sprawdza czy podana ścieżka istnieje, jeśli nie to ją tworzy
 def _ensure_dir(path: str) -> None:

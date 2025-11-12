@@ -2,7 +2,6 @@ import os
 import logging
 
 from data_reader import json_reader
-
 from test.data_reader import data_for_test_json_reader
 
 EXISTING_FILE = "data.json"

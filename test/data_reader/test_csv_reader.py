@@ -2,7 +2,6 @@ import os
 import logging
 
 from data_reader import csv_reader
-
 from test.data_reader import data_for_test_csv_reader
 
 EXISTING_FILE = "test/data_reader/data.csv"

@@ -1,6 +1,5 @@
-import logging
 import pytest
-
+import logging
 import quiz_generator
 
 from test import data_for_test_quiz_generator # wymaga __init__.py do działania
