@@ -7,7 +7,7 @@ from test import data_for_test_quiz_generator # wymaga __init__.py do działania
 
 def test_for_correct_data(caplog) -> None:
     with caplog.at_level(logging.INFO):
-        quiz = quiz_generator.generate(data_for_test_quiz_generator.TEST_DATA, 5)
+        quiz = quiz_generator.generate_quiz(data_for_test_quiz_generator.TEST_DATA, 5)
 
     list_of_ids = set()
     for question in quiz:
@@ -26,6 +26,6 @@ def test_for_correct_data(caplog) -> None:
 
 def test_for_incorrect_input_data(caplog):
     with pytest.raises(TypeError) as error:
-        quiz_generator.generate("incorrect datatype", 5)
+        quiz_generator.generate_quiz("incorrect datatype", 5)
 
     assert str(error.value) == "Quiz can be generated only from list of questions, not <class 'str'>"
