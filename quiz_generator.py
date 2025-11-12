@@ -1,7 +1,7 @@
 import random
 import logging
 
-def generate(available_questions: list, number_of_questions) -> list[dict]:
+def generate_quiz(available_questions: list, number_of_questions) -> list[dict]:
     if type(available_questions) is not list:
         raise TypeError(f"Quiz can be generated only from list of questions, not {type(available_questions)}")
 

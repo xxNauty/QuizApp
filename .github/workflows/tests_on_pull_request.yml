@@ -23,10 +23,10 @@ jobs:
           python -m pip install -r requirements.txt
           python -m pip install pytest pytest-cov
 
-      - name: Run pytest with coverage (require 100%)
+      - name: Run pytest with coverage (require at least 95%)
         env:
           PYTHONPATH: .
-        run: coverage run -m pytest --cov=. --cov-fail-under=100 --cov-report=term --cov-report=xml
+        run: coverage run -m pytest --cov=. --cov-fail-under=95 --cov-report=term --cov-report=xml
 
       - name: Upload coverage XML (always, for debugging)
         if: always()

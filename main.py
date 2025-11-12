@@ -6,11 +6,9 @@ import quiz_generator
 
 from data_reader import csv_reader, json_reader
 
-DIRECTORY_OF_DATA = "data/pozwolenie-na-posiadanie-broni-palnej/"
-
-def read_configuration_of_quiz() -> tuple[int, int]:
+def read_configuration_of_quiz(directory_of_data) -> tuple[int, int]:
     try:
-        with open(DIRECTORY_OF_DATA + "config.yaml") as file:
+        with open(directory_of_data + "config.yaml") as file:
             data = yaml.load(file, Loader=yaml.SafeLoader)
             number_of_questions = data['number_of_questions']
             minimum_to_pass = data['minimum_to_pass']
@@ -26,20 +24,20 @@ def read_configuration_of_quiz() -> tuple[int, int]:
 
     return number_of_questions, minimum_to_pass
 
-def read_question_database() -> list|None:
-    if os.path.exists(DIRECTORY_OF_DATA + "data.json"):
-        questions = json_reader.read_file(DIRECTORY_OF_DATA + "data.json")
-    elif os.path.exists(DIRECTORY_OF_DATA + "data.csv"):
-        questions = csv_reader.read_file(DIRECTORY_OF_DATA + "data.csv")
+def read_question_database(directory_of_data) -> list|None:
+    if os.path.exists(directory_of_data + "data.json"):
+        questions = json_reader.read_file(directory_of_data + "data.json")
+    elif os.path.exists(directory_of_data + "data.csv"):
+        questions = csv_reader.read_file(directory_of_data + "data.csv")
     else:
         logging.error("There is no file with questions")
         return None
     return questions
 
-def play():
-    number_of_questions, minimum_to_pass = read_configuration_of_quiz()
-    questions = read_question_database()
-    quiz = quiz_generator.generate(questions, number_of_questions) # losowanie pytań do quizu
+def play(directory_of_data):
+    number_of_questions, minimum_to_pass = read_configuration_of_quiz(directory_of_data)
+    questions = read_question_database(directory_of_data)
+    quiz = quiz_generator.generate_quiz(questions, number_of_questions) # losowanie pytań do quizu
 
     answers = []
     correct_answers = 0
@@ -88,4 +86,5 @@ def play():
         else:
             print(f"Correct answer: {correct_answer}")
 
-play()
+if __name__ == "__main__":
+    play("data/pozwolenie-na-posiadanie-broni-palnej/")
