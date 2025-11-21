@@ -6,17 +6,17 @@ import os
 from pathlib import Path
 from scripts import quiz_template_generator
 
-# tworzenie wirtualnego środowiska do uruchamiania testów
-@pytest.fixture()
-def isolated_cwd():
-    old_cwd = os.getcwd()
-    tmp_dir = tempfile.mkdtemp(prefix="pytest-isolated-env-")
-    os.chdir(tmp_dir)
-    try:
-        yield Path(tmp_dir)
-    finally:
-        os.chdir(old_cwd)
-        shutil.rmtree(tmp_dir, ignore_errors=True)
+# # tworzenie wirtualnego środowiska do uruchamiania testów
+# @pytest.fixture()
+# def isolated_cwd():
+#     old_cwd = os.getcwd()
+#     tmp_dir = tempfile.mkdtemp(prefix="pytest-isolated-env-")
+#     os.chdir(tmp_dir)
+#     try:
+#         yield Path(tmp_dir)
+#     finally:
+#         os.chdir(old_cwd)
+#         shutil.rmtree(tmp_dir, ignore_errors=True)
 
 @pytest.mark.parametrize(
     "name, file_format, number_of_questions, minimum_to_pass",
