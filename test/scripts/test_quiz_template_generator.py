@@ -6,17 +6,17 @@ import os
 from pathlib import Path
 from scripts import quiz_template_generator
 
-# # tworzenie wirtualnego środowiska do uruchamiania testów
-# @pytest.fixture()
-# def isolated_cwd():
-#     old_cwd = os.getcwd()
-#     tmp_dir = tempfile.mkdtemp(prefix="pytest-isolated-env-")
-#     os.chdir(tmp_dir)
-#     try:
-#         yield Path(tmp_dir)
-#     finally:
-#         os.chdir(old_cwd)
-#         shutil.rmtree(tmp_dir, ignore_errors=True)
+# tworzenie wirtualnego środowiska do uruchamiania testów
+@pytest.fixture()
+def isolated_cwd():
+    old_cwd = os.getcwd()
+    tmp_dir = tempfile.mkdtemp(prefix="pytest-isolated-env-")
+    os.chdir(tmp_dir)
+    try:
+        yield Path(tmp_dir)
+    finally:
+        os.chdir(old_cwd)
+        shutil.rmtree(tmp_dir, ignore_errors=True)
 
 @pytest.mark.parametrize(
     "name, file_format, number_of_questions, minimum_to_pass",
@@ -25,7 +25,7 @@ from scripts import quiz_template_generator
         ("second-quiz", "json", 100, 100)
     ]
 )
-def test_for_correct_data(monkeypatch, name, file_format, number_of_questions, minimum_to_pass):
+def test_for_correct_data(isolated_cwd, monkeypatch, name, file_format, number_of_questions, minimum_to_pass):
     inputs = iter([name, file_format, number_of_questions, minimum_to_pass])
     monkeypatch.setattr("builtins.input", lambda prompt="": next(inputs)) # symulowanie danych wprowadzonych przez użytkownika
 
@@ -47,7 +47,7 @@ def test_for_correct_data(monkeypatch, name, file_format, number_of_questions, m
         ("First_quiz", ["HTML", "CSS", "", "dog", "Json"], 20, 12),
     ]
 )
-def test_for_incorrect_file_formats(monkeypatch, name, file_format, number_of_questions, minimum_to_pass):
+def test_for_incorrect_file_formats(isolated_cwd, monkeypatch, name, file_format, number_of_questions, minimum_to_pass):
     inputs = iter([name, *file_format, number_of_questions, minimum_to_pass]) # * przy file_format oznacza rozpakowywanie listy
     monkeypatch.setattr("builtins.input", lambda prompt="": next(inputs))
 
@@ -69,7 +69,7 @@ def test_for_incorrect_file_formats(monkeypatch, name, file_format, number_of_qu
         ("First_quiz", "csv", 20, [22, 99, 12]),
     ]
 )
-def test_for_min_to_pass_greater_than_num_of_questions(monkeypatch, name, file_format, number_of_questions, minimum_to_pass):
+def test_for_min_to_pass_greater_than_num_of_questions(isolated_cwd, monkeypatch, name, file_format, number_of_questions, minimum_to_pass):
     inputs = iter([name, file_format, number_of_questions, *minimum_to_pass])
     monkeypatch.setattr("builtins.input", lambda prompt="": next(inputs))
 
