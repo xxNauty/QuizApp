@@ -1,2 +1,4 @@
 pyyaml
 pytest
+pytest-cov
+coverage
