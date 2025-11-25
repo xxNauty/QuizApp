@@ -45,6 +45,3 @@ Sample of the `config.yaml` file:
 number_of_questions: 20
 minimum_to_pass: 18
 ```
-## License
-
-- ...
