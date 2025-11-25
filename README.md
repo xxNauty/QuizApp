@@ -38,9 +38,21 @@ NUMER_PYTANIA,PYTANIE,ODP_A,ODP_B,ODP_C,POPRAWNA,ZRODLO
 ]
 ```
 For every new quiz database you should create new directory inside the `data` directory. For database create the `data.csv` or `data.json` file and for the configuration create the `config.yaml` file.
-Inside it, you can define how many questions should be drawn for every quiz and how many correct answers are required to pass it.
+Inside it, you can define how many questions should be drawn for every quiz and how many correct answers are required to pass it. \
+Now you can also use script located inside the `scripts\quiz_template_generator.py` file which can do it for you. Just answer its questions and the templates for new quiz will be generated. \
+You can run it with:
+```bash
+    python scripts/quiz_template_generator.py
+```
+You will be asked four questions, you need to write:
+1. The name of quiz
+2. In which format you want to store your questions (for now only CSV and JSON are supported)
+3. How many questions should single quiz contain
+4. How many answers must be correct to pass
 
-Sample of the `config.yaml` file:
+Last two information will be stored inside the `config.yaml` file inside the quiz directory
+
+Sample config file:
 ```yaml
 number_of_questions: 20
 minimum_to_pass: 18
