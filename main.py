@@ -6,21 +6,23 @@ import quiz_generator
 
 from data_reader import csv_reader, json_reader
 
+logging.basicConfig(level=logging.INFO)
+
 def read_configuration_of_quiz(directory_of_data) -> tuple[int, int]:
     try:
         with open(directory_of_data + "config.yaml") as file:
             data = yaml.load(file, Loader=yaml.SafeLoader)
             number_of_questions = data['number_of_questions']
             minimum_to_pass = data['minimum_to_pass']
-            # number_of_questions = 5
-            # minimum_to_pass = 3
+            logging.info("Configuration read from config.yaml file.")
 
             file.close()
     except FileNotFoundError:
-        logging.error("There is no file with configuration. You have to pass the settings now")
+        print("There is no file with configuration. You have to pass the settings now")
 
         number_of_questions = int(input("How many questions should the test have?"))
         minimum_to_pass = int(input("How many answers have to be correct in order to pass?"))
+        logging.info("Configuration file not found, read from user input")
 
     return number_of_questions, minimum_to_pass
 
@@ -34,7 +36,7 @@ def read_question_database(directory_of_data) -> list|None:
         return None
     return questions
 
-def play(directory_of_data) -> None:
+def play(directory_of_data: str) -> None:
     number_of_questions, minimum_to_pass = read_configuration_of_quiz(directory_of_data)
     questions = read_question_database(directory_of_data)
     quiz = quiz_generator.generate_quiz(questions, number_of_questions) # losowanie pytań do quizu
@@ -43,12 +45,13 @@ def play(directory_of_data) -> None:
     correct_answers = 0
     print("The quiz starts")
     for i in range(number_of_questions):
-        print(f"Question number {i + 1}:")
+        print(f"\nQuestion number {i + 1}:")
         print(quiz[i]['PYTANIE'])
         print("a) " + quiz[i]['ODP_A'])
         print("b) " + quiz[i]['ODP_B'])
         print("c) " + quiz[i]['ODP_C'])
         print()
+
         choice = input("Choose correct answer (a/b/c):")
         chosen_answer = ''
         match choice.lower():
@@ -71,6 +74,8 @@ def play(directory_of_data) -> None:
         answers.append((quiz[i]['PYTANIE'], chosen_answer, choice.upper() == quiz[i]['POPRAWNA'], correct_answer))
         if choice.upper() == quiz[i]['POPRAWNA']:
             correct_answers += 1
+
+    logging.info("Quiz ended")
 
     if correct_answers >= minimum_to_pass:
         print(f"Congratulations! You passed!({correct_answers}/{number_of_questions})\nHere are your results:")
