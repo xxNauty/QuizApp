@@ -4,6 +4,7 @@ import yaml
 import logging
 import quiz_generator
 
+from data import data_reader
 from data_reader import csv_reader, json_reader
 
 def read_configuration_of_quiz(directory_of_data) -> tuple[int, int]:
