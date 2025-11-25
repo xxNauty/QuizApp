@@ -34,7 +34,7 @@ def read_question_database(directory_of_data) -> list|None:
         return None
     return questions
 
-def play(directory_of_data):
+def play(directory_of_data) -> None:
     number_of_questions, minimum_to_pass = read_configuration_of_quiz(directory_of_data)
     questions = read_question_database(directory_of_data)
     quiz = quiz_generator.generate_quiz(questions, number_of_questions) # losowanie pytań do quizu

@@ -1,6 +1,6 @@
 import os
 
-def generate(custom_quiz_dir = ""):
+def generate(custom_quiz_dir:str = "") -> None:
     quiz_name = input("Name this quiz: ")
     quiz_name = quiz_name.lower().replace(" ", "-")
 

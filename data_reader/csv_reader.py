@@ -18,8 +18,3 @@ def read_file(filename: str, encoding: str = 'utf8') -> list[dict]|None:
     except FileNotFoundError:
         logging.error("There is no such file as %s", filename)
         return None
-
-# questions = read_file("../data/pozwolenie-na-posiadanie-broni-palnej.csv")
-#
-# for question in questions:
-#     print(question)

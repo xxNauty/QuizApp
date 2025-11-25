@@ -24,7 +24,7 @@ def test_for_correct_data(caplog) -> None:
 
     assert "Quiz generated, there are 5 questions" in caplog.messages
 
-def test_for_incorrect_input_data(caplog):
+def test_for_incorrect_input_data(caplog) -> None:
     with pytest.raises(TypeError) as error:
         quiz_generator.generate_quiz("incorrect datatype", 5)
 

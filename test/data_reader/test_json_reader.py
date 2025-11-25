@@ -7,7 +7,7 @@ from test.data_reader import data_for_test_json_reader
 
 EXISTING_FILE = "data.json"
 
-def test_for_existing_file(caplog):
+def test_for_existing_file(caplog) -> None:
     _prepare_file_for_test()
 
     with caplog.at_level(logging.INFO):
@@ -22,7 +22,7 @@ def test_for_existing_file(caplog):
 
     _cleanup_after_tests()
 
-def test_for_non_existing_file(caplog):
+def test_for_non_existing_file(caplog) -> None:
     with caplog.at_level(logging.ERROR):
         content = json_reader.read_file("non_existing_file.json")
 
