@@ -6,7 +6,8 @@ import quiz_generator
 
 from data_reader import csv_reader, json_reader
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(filename="logs.log", level=logging.INFO)
+logger = logging.getLogger("main.py")
 
 def read_configuration_of_quiz(directory_of_data) -> tuple[int, int]:
     try:
@@ -14,7 +15,7 @@ def read_configuration_of_quiz(directory_of_data) -> tuple[int, int]:
             data = yaml.load(file, Loader=yaml.SafeLoader)
             number_of_questions = data['number_of_questions']
             minimum_to_pass = data['minimum_to_pass']
-            logging.info("Configuration read from config.yaml file.")
+            logger.info("Configuration read from config.yaml file.")
 
             file.close()
     except FileNotFoundError:
@@ -22,7 +23,7 @@ def read_configuration_of_quiz(directory_of_data) -> tuple[int, int]:
 
         number_of_questions = int(input("How many questions should the test have?"))
         minimum_to_pass = int(input("How many answers have to be correct in order to pass?"))
-        logging.info("Configuration file not found, read from user input")
+        logger.info("Configuration file not found, read from user input")
 
     return number_of_questions, minimum_to_pass
 
@@ -32,7 +33,7 @@ def read_question_database(directory_of_data) -> list|None:
     elif os.path.exists(directory_of_data + "data.csv"):
         questions = csv_reader.read_file(directory_of_data + "data.csv")
     else:
-        logging.error("There is no file with questions")
+        logger.error("There is no file with questions")
         return None
     return questions
 
@@ -75,12 +76,14 @@ def play(directory_of_data: str) -> None:
         if choice.upper() == quiz[i]['POPRAWNA']:
             correct_answers += 1
 
-    logging.info("Quiz ended")
+    logger.info("Quiz ended")
 
     if correct_answers >= minimum_to_pass:
         print(f"Congratulations! You passed!({correct_answers}/{number_of_questions})\nHere are your results:")
+        logger.info(f"Test passed({correct_answers}/{number_of_questions})")
     else:
         print(f"You failed, your score is {correct_answers}/{number_of_questions}. You need to have at least {minimum_to_pass} correct answers to pass")
+        logger.info(f"Test failed({correct_answers}/{number_of_questions})")
 
     for i, single_result in enumerate(answers):
         question, chosen_answer, is_correct, correct_answer = single_result
