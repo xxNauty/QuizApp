@@ -4,7 +4,6 @@ import yaml
 import logging
 import quiz_generator
 
-from data import data_reader
 from data_reader import csv_reader, json_reader
 from datetime import datetime
 
