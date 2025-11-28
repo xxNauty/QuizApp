@@ -5,14 +5,22 @@ import logging
 import quiz_generator
 
 from data_reader import csv_reader, json_reader
+from datetime import datetime
 
-logging.basicConfig(filename="logs.log", level=logging.INFO)
+logging.basicConfig(
+    level=logging.INFO,
+    filename=f"logs/{datetime.now().strftime("%d_%m_%Y")}_logs.log",
+    filemode='a',
+    format='%(asctime)s %(levelname)s %(name)s: %(message)s',
+    encoding='utf-8'
+)
 logger = logging.getLogger("main.py")
 
-def read_configuration_of_quiz(directory_of_data) -> tuple[int, int]:
+def read_configuration_of_quiz(directory_of_data) -> tuple[int, int, str]:
     try:
         with open(directory_of_data + "config.yaml") as file:
             data = yaml.load(file, Loader=yaml.SafeLoader)
+            quiz_name = data['quiz_name']
             number_of_questions = data['number_of_questions']
             minimum_to_pass = data['minimum_to_pass']
             logger.info("Configuration read from config.yaml file.")
@@ -21,11 +29,12 @@ def read_configuration_of_quiz(directory_of_data) -> tuple[int, int]:
     except FileNotFoundError:
         print("There is no file with configuration. You have to pass the settings now")
 
+        quiz_name = "No title for quiz"
         number_of_questions = int(input("How many questions should the test have?"))
         minimum_to_pass = int(input("How many answers have to be correct in order to pass?"))
         logger.info("Configuration file not found, read from user input")
 
-    return number_of_questions, minimum_to_pass
+    return number_of_questions, minimum_to_pass, quiz_name
 
 def read_question_database(directory_of_data) -> list|None:
     if os.path.exists(directory_of_data + "data.json"):
@@ -38,9 +47,12 @@ def read_question_database(directory_of_data) -> list|None:
     return questions
 
 def play(directory_of_data: str) -> None:
-    number_of_questions, minimum_to_pass = read_configuration_of_quiz(directory_of_data)
+    number_of_questions, minimum_to_pass, quiz_name = read_configuration_of_quiz(directory_of_data)
     questions = read_question_database(directory_of_data)
     quiz = quiz_generator.generate_quiz(questions, number_of_questions) # losowanie pytań do quizu
+
+    logger.info("----Game Starts----")
+    logger.info(f"Topic of the quiz: {quiz_name}")
 
     answers = []
     correct_answers = 0
