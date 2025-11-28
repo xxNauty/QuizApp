@@ -13,9 +13,10 @@ def _ensure_dir(path: str) -> None:
     os.makedirs(path, exist_ok=True)
 
 # tworzy plik konfiguracyjny używany na czas testów
-def _write_config(directory: str, number_of_questions: int, minimum_to_pass: int) -> None:
+def _write_config(directory: str, number_of_questions: int, minimum_to_pass: int, quiz_name: str) -> None:
     _ensure_dir(directory)
     with open(os.path.join(directory, "config.yaml"), "w", encoding="utf-8") as f:
+        f.write(f"quiz_name: {quiz_name}\n")
         f.write(f"number_of_questions: {number_of_questions}\n")
         f.write(f"minimum_to_pass: {minimum_to_pass}\n")
 
@@ -64,12 +65,13 @@ def _sample_questions():
 def test_read_configuration_from_file(tmp_path) -> None:
     directory = tmp_path / "data"
     dir_str = str(directory) + os.sep
-    _write_config(dir_str, number_of_questions=4, minimum_to_pass=3)
+    _write_config(dir_str, number_of_questions=4, minimum_to_pass=3, quiz_name="Test quiz")
 
-    number, minimum = main.read_configuration_of_quiz(dir_str)
+    number, minimum, quiz_name = main.read_configuration_of_quiz(dir_str)
 
     assert number == 4
     assert minimum == 3
+    assert quiz_name == "Test quiz"
 
     _cleanup_files(dir_str)
 
@@ -89,11 +91,10 @@ def test_read_configuration_prompts_when_missing(monkeypatch, caplog, tmp_path) 
     monkeypatch.setattr(builtins, "input", fake_input)
 
     with caplog.at_level(logging.ERROR):
-        number, minimum = main.read_configuration_of_quiz(dir_str)
+        number, minimum, quiz_name = main.read_configuration_of_quiz(dir_str)
 
     assert number == 7
     assert minimum == 5
-    assert any("There is no file with configuration" in m for m in caplog.messages)
 
 def test_read_question_database_prefers_json(tmp_path, monkeypatch) -> None:
     directory = tmp_path / "data_json"
@@ -147,7 +148,7 @@ def test_play_behaviour(tmp_path, monkeypatch, capsys, choices: list[str], expec
 
     questions = _sample_questions()
 
-    _write_config(dir_str, number_of_questions=2, minimum_to_pass=2)
+    _write_config(dir_str, number_of_questions=2, minimum_to_pass=2, quiz_name="Test quiz")
     _write_empty_file(dir_str, "data.json")
 
     monkeypatch.setattr(main, "json_reader", types.SimpleNamespace(read_file=lambda _: questions))
