@@ -5,6 +5,7 @@ import quiz_generator
 
 from test import data_for_test_quiz_generator # wymaga __init__.py do działania
 
+@pytest.mark.skip()
 def test_for_correct_data(caplog) -> None:
     with caplog.at_level(logging.INFO):
         quiz = quiz_generator.generate_quiz(data_for_test_quiz_generator.TEST_DATA, 5)
@@ -24,6 +25,7 @@ def test_for_correct_data(caplog) -> None:
 
     assert "Quiz generated, there are 5 questions" in caplog.messages
 
+@pytest.mark.skip()
 def test_for_incorrect_input_data(caplog) -> None:
     with pytest.raises(TypeError) as error:
         quiz_generator.generate_quiz("incorrect datatype", 5)

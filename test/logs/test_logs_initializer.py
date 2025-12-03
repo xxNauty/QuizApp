@@ -1,4 +1,5 @@
 import lorem
+import pytest
 
 from pathlib import Path
 from logs import logs_initializer

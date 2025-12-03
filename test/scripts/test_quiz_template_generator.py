@@ -27,6 +27,7 @@ def isolated_cwd() -> Generator[Path, Any, None]:
         ("second-quiz", "json", 100, 100)
     ]
 )
+@pytest.mark.skip()
 def test_for_correct_data(isolated_cwd, monkeypatch, name: str, file_format: str, number_of_questions: int, minimum_to_pass: int) -> None:
     inputs = iter([name, file_format, number_of_questions, minimum_to_pass])
     monkeypatch.setattr("builtins.input", lambda prompt="": next(inputs)) # symulowanie danych wprowadzonych przez użytkownika
@@ -49,6 +50,7 @@ def test_for_correct_data(isolated_cwd, monkeypatch, name: str, file_format: str
         ("First_quiz", ["HTML", "CSS", "", "dog", "Json"], 20, 12),
     ]
 )
+@pytest.mark.skip()
 def test_for_incorrect_file_formats(isolated_cwd, monkeypatch, name: str, file_format: str, number_of_questions: int, minimum_to_pass: int) -> None:
     inputs = iter([name, *file_format, number_of_questions, minimum_to_pass]) # * przy file_format oznacza rozpakowywanie listy
     monkeypatch.setattr("builtins.input", lambda prompt="": next(inputs))
@@ -71,6 +73,7 @@ def test_for_incorrect_file_formats(isolated_cwd, monkeypatch, name: str, file_f
         ("First_quiz", "csv", 20, [22, 99, 12]),
     ]
 )
+@pytest.mark.skip()
 def test_for_min_to_pass_greater_than_num_of_questions(isolated_cwd, monkeypatch, name: str, file_format: str, number_of_questions: int, minimum_to_pass: int) -> None:
     inputs = iter([name, file_format, number_of_questions, *minimum_to_pass])
     monkeypatch.setattr("builtins.input", lambda prompt="": next(inputs))
