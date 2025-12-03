@@ -1,12 +1,6 @@
 # QuizApp
 
-A simple Python-based quiz application. This repository contains the code for creating and running quizzes 
-from the command line. It is intended to be lightweight and easy to extend.
-
-## Features
-- Questions with one of three correct answers
-- Easy to add new questions or question files
-- Minimal dependencies (almost pure Python)
+It is a simple Python-based quiz game with TUI(Terminal User Interface). Supports quizzes with one of three correct answer
 
 ## Requirements
 - Python 3.8+
@@ -38,7 +32,7 @@ NUMER_PYTANIA,PYTANIE,ODP_A,ODP_B,ODP_C,POPRAWNA,ZRODLO
 ]
 ```
 For every new quiz database you should create new directory inside the `data` directory. For database create the `data.csv` or `data.json` file and for the configuration create the `config.yaml` file.
-Inside it, you can define how many questions should be drawn for every quiz and how many correct answers are required to pass it. \
+Inside it, you can define the name of the quiz, how many questions should be drawn for every quiz and how many correct answers are required to pass it. \
 Now you can also use script located inside the `scripts\quiz_template_generator.py` file which can do it for you. Just answer its questions and the templates for new quiz will be generated. \
 You can run it with:
 ```bash
@@ -54,6 +48,7 @@ Last two information will be stored inside the `config.yaml` file inside the qui
 
 Sample config file:
 ```yaml
+quiz_name: name_of_the_quiz
 number_of_questions: 20
 minimum_to_pass: 18
 ```
