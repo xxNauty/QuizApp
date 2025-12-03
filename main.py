@@ -25,6 +25,7 @@ def read_configuration_of_quiz(directory_of_data) -> tuple[int, int, str]:
             number_of_questions = data['number_of_questions']
             minimum_to_pass = data['minimum_to_pass']
             logger.info("Configuration read from config.yaml file.")
+            logger.info(f"Topic of the quiz: {quiz_name}")
 
             file.close()
     except FileNotFoundError:
@@ -34,6 +35,7 @@ def read_configuration_of_quiz(directory_of_data) -> tuple[int, int, str]:
         number_of_questions = int(input("How many questions should the test have?"))
         minimum_to_pass = int(input("How many answers have to be correct in order to pass?"))
         logger.info("Configuration file not found, read from user input")
+        logger.info(f"Topic of the quiz: {quiz_name}")
 
     return number_of_questions, minimum_to_pass, quiz_name
 
@@ -53,7 +55,6 @@ def play(directory_of_data: str) -> None:
     quiz = quiz_generator.generate_quiz(questions, number_of_questions) # losowanie pytań do quizu
 
     logger.info("----Game Starts----")
-    logger.info(f"Topic of the quiz: {quiz_name}")
 
     answers = []
     correct_answers = 0
@@ -86,6 +87,7 @@ def play(directory_of_data: str) -> None:
                 correct_answer = quiz[i]['ODP_C']
 
         answers.append((quiz[i]['PYTANIE'], chosen_answer, choice.upper() == quiz[i]['POPRAWNA'], correct_answer))
+        logger.info(f"For question number {i + 1} user chose answer {choice}. It's {"Correct" if choice.upper() == quiz[i]['POPRAWNA'] else "Wrong"}!")
         if choice.upper() == quiz[i]['POPRAWNA']:
             correct_answers += 1
 
@@ -100,7 +102,7 @@ def play(directory_of_data: str) -> None:
 
     for i, single_result in enumerate(answers):
         question, chosen_answer, is_correct, correct_answer = single_result
-        print(f"Question number {i}: {question}")
+        print(f"Question number {i + 1}: {question}")
         print(f"Your choice: {chosen_answer}")
         if is_correct:
             print("Your answer is correct!")
@@ -108,4 +110,5 @@ def play(directory_of_data: str) -> None:
             print(f"Correct answer: {correct_answer}")
 
 if __name__ == "__main__":
+    logger.info("-------------------------------------")
     play("data/pozwolenie-na-bron/")
