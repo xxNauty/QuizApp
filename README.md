@@ -12,7 +12,6 @@ It is a simple Python-based quiz game with TUI(Terminal User Interface). Support
 git clone https://github.com/xxNauty/QuizApp.git
 cd QuizApp
 ```
-
 2. Run the app:
 ```bash
 python main.py
@@ -31,9 +30,11 @@ NUMER_PYTANIA,PYTANIE,ODP_A,ODP_B,ODP_C,POPRAWNA,ZRODLO
   {"NUMER_PYTANIA":1,"PYTANIE":"Content of the question","ODP_A":"answer A","ODP_B":"answer B","ODP_C":"answer C","POPRAWNA":"correct answer (A/B/C)","ZRODLO":"Optional field, where you can put additional information that can prove the correct answer"}
 ]
 ```
-For every new quiz database you should create new directory inside the `data` directory. For database create the `data.csv` or `data.json` file and for the configuration create the `config.yaml` file.
-Inside it, you can define the name of the quiz, how many questions should be drawn for every quiz and how many correct answers are required to pass it. \
-Now you can also use script located inside the `scripts\quiz_template_generator.py` file which can do it for you. Just answer its questions and the templates for new quiz will be generated. \
+For every new quiz database you should create new directory inside the `data` directory. For database create the `data.csv` or `data.json` file and for the configuration create the `config.yaml` file. \
+Inside of it, you can define the name of the quiz, how many questions should be drawn for every quiz and how many correct answers are required to pass it. 
+
+You can also use script located inside the `scripts\quiz_template_generator.py` file which can do it for you. Just answer its questions and the templates for new quiz will be generated.
+
 You can run it with:
 ```bash
 python scripts/quiz_template_generator.py
@@ -44,7 +45,7 @@ You will be asked four questions, you need to write:
 3. How many questions should single quiz contain
 4. How many answers must be correct to pass
 
-Last two information will be stored inside the `config.yaml` file inside the quiz directory
+All the configuration of the quiz will be stored inside the `config.yaml` file.
 
 Sample config file:
 ```yaml
