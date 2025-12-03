@@ -1,12 +1,13 @@
-import os.path
-
 import yaml
 import logging
 import quiz_generator
 
+from os import path
 from data_reader import csv_reader, json_reader
 from datetime import datetime
+from logs import logs_initializer
 
+logs_initializer.init_logs()
 logging.basicConfig(
     level=logging.INFO,
     filename=f"logs/{datetime.now().strftime("%d_%m_%Y")}_logs.log",
@@ -37,9 +38,9 @@ def read_configuration_of_quiz(directory_of_data) -> tuple[int, int, str]:
     return number_of_questions, minimum_to_pass, quiz_name
 
 def read_question_database(directory_of_data) -> list|None:
-    if os.path.exists(directory_of_data + "data.json"):
+    if path.exists(directory_of_data + "data.json"):
         questions = json_reader.read_file(directory_of_data + "data.json")
-    elif os.path.exists(directory_of_data + "data.csv"):
+    elif path.exists(directory_of_data + "data.csv"):
         questions = csv_reader.read_file(directory_of_data + "data.csv")
     else:
         logger.error("There is no file with questions")
@@ -107,4 +108,4 @@ def play(directory_of_data: str) -> None:
             print(f"Correct answer: {correct_answer}")
 
 if __name__ == "__main__":
-    play("data/pozwolenie-na-posiadanie-broni-palnej/")
+    play("data/pozwolenie-na-bron/")
