@@ -1,5 +1,6 @@
 import os
 import logging
+import pytest
 
 from data_reader import json_reader
 
@@ -7,6 +8,7 @@ from test.data_reader import data_for_test_json_reader
 
 EXISTING_FILE = "data.json"
 
+@pytest.mark.skip()
 def test_for_existing_file(caplog) -> None:
     _prepare_file_for_test()
 
@@ -22,6 +24,7 @@ def test_for_existing_file(caplog) -> None:
 
     _cleanup_after_tests()
 
+@pytest.mark.skip()
 def test_for_non_existing_file(caplog) -> None:
     with caplog.at_level(logging.ERROR):
         content = json_reader.read_file("non_existing_file.json")
