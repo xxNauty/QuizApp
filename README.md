@@ -9,13 +9,13 @@ It is a simple Python-based quiz game with TUI(Terminal User Interface). Support
 ## Quick Start
 1. Clone the repository:
 ```bash
-    git clone https://github.com/xxNauty/QuizApp.git
-    cd QuizApp
+git clone https://github.com/xxNauty/QuizApp.git
+cd QuizApp
 ```
 
 2. Run the app:
 ```bash
-    python main.py
+python main.py
 ```
 
 ## Custom quiz database
@@ -36,7 +36,7 @@ Inside it, you can define the name of the quiz, how many questions should be dra
 Now you can also use script located inside the `scripts\quiz_template_generator.py` file which can do it for you. Just answer its questions and the templates for new quiz will be generated. \
 You can run it with:
 ```bash
-    python scripts/quiz_template_generator.py
+python scripts/quiz_template_generator.py
 ```
 You will be asked four questions, you need to write:
 1. The name of quiz
