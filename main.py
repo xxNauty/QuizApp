@@ -63,34 +63,34 @@ def play(directory_of_data: str) -> None:
     print("The quiz starts")
     for i in range(number_of_questions):
         print(f"\nQuestion number {i + 1}:")
-        print(quiz[i]['PYTANIE'])
-        print("a) " + quiz[i]['ODP_A'])
-        print("b) " + quiz[i]['ODP_B'])
-        print("c) " + quiz[i]['ODP_C'])
+        print(quiz[i]['question'])
+        print("a) " + quiz[i]['answer_a'])
+        print("b) " + quiz[i]['answer_b'])
+        print("c) " + quiz[i]['answer_c'])
         print()
 
         choice = input("Choose correct answer (a/b/c):")
         chosen_answer = ''
         match choice.lower():
             case 'a':
-                chosen_answer = quiz[i]['ODP_A']
+                chosen_answer = quiz[i]['answer_a']
             case 'b':
-                chosen_answer = quiz[i]['ODP_B']
+                chosen_answer = quiz[i]['answer_b']
             case 'c':
-                chosen_answer = quiz[i]['ODP_C']
+                chosen_answer = quiz[i]['answer_c']
 
         correct_answer = ''
-        match quiz[i]['POPRAWNA']:
+        match quiz[i]['correct']:
             case 'A':
-                correct_answer = quiz[i]['ODP_A']
+                correct_answer = quiz[i]['answer_a']
             case 'B':
-                correct_answer = quiz[i]['ODP_B']
+                correct_answer = quiz[i]['answer_b']
             case 'C':
-                correct_answer = quiz[i]['ODP_C']
+                correct_answer = quiz[i]['answer_c']
 
-        answers.append((quiz[i]['PYTANIE'], chosen_answer, choice.upper() == quiz[i]['POPRAWNA'], correct_answer))
-        logger.info(f"For question number {i + 1} user chose answer {choice}. It's {"Correct" if choice.upper() == quiz[i]['POPRAWNA'] else "Wrong"}!")
-        if choice.upper() == quiz[i]['POPRAWNA']:
+        answers.append((quiz[i]['question'], chosen_answer, choice.upper() == quiz[i]['correct'], correct_answer))
+        logger.info(f"For question number {i + 1} user chose answer {choice}. It's {"Correct" if choice.upper() == quiz[i]['correct'] else "Wrong"}!")
+        if choice.upper() == quiz[i]['correct']:
             correct_answers += 1
 
     logger.info("Quiz ended")
