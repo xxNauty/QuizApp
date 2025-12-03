@@ -24,6 +24,8 @@ def read_configuration_of_quiz(directory_of_data) -> tuple[int, int, str]:
             quiz_name = data['quiz_name']
             number_of_questions = data['number_of_questions']
             minimum_to_pass = data['minimum_to_pass']
+            # number_of_questions = 3
+            # minimum_to_pass = 1
             logger.info("Configuration read from config.yaml file.")
             logger.info(f"Topic of the quiz: {quiz_name}")
 
@@ -102,12 +104,12 @@ def play(directory_of_data: str) -> None:
 
     for i, single_result in enumerate(answers):
         question, chosen_answer, is_correct, correct_answer = single_result
-        print(f"Question number {i + 1}: {question}")
-        print(f"Your choice: {chosen_answer}")
+        print(f"\nQuestion number {i + 1}: {question}")
+        print(f"Your choice: \n\t{chosen_answer}")
         if is_correct:
             print("Your answer is correct!")
         else:
-            print(f"Correct answer: {correct_answer}")
+            print(f"Correct answer: \n\t{correct_answer}")
 
 if __name__ == "__main__":
     logger.info("-------------------------------------")
