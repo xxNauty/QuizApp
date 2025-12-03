@@ -1,10 +1,13 @@
 import os
 import logging
-from datetime import datetime
 
+from datetime import datetime
+from logs import logs_initializer
+
+logs_initializer.init_logs()
 logging.basicConfig(
     level=logging.INFO,
-    filename=f"logs/{datetime.now().strftime("%d_%m_%Y")}_logs.log",
+    filename=f"../logs/{datetime.now().strftime("%d_%m_%Y")}_logs.log",
     filemode='a',
     format='%(asctime)s %(levelname)s %(name)s: %(message)s',
     encoding='utf-8'
