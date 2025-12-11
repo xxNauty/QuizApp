@@ -7,7 +7,7 @@ __pycache__
 */__pycache__
 
 data/*
-!data/.gitkeep
+!data/data_reader.py
 
 logs/*
-!logs/.gitkeep
+!logs/logs_initializer.py

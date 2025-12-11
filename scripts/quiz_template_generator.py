@@ -7,17 +7,14 @@ from logs import logs_initializer
 logs_initializer.init_logs()
 logging.basicConfig(
     level=logging.INFO,
-    filename=f"../logs/{datetime.now().strftime("%d_%m_%Y")}_logs.log",
+    filename=f"logs/{datetime.now().strftime("%d_%m_%Y")}_logs.log",
     filemode='a',
     format='%(asctime)s %(levelname)s %(name)s: %(message)s',
     encoding='utf-8'
 )
 logger = logging.getLogger("quiz_template_generator.py")
 
-def generate(custom_quiz_dir:str = "") -> None:
-    if custom_quiz_dir != "":
-        logger.info("Chosen custom quiz directory")
-
+def generate() -> None:
     quiz_name = input("Name this quiz: ")
     quiz_name = quiz_name.lower().replace(" ", "-")
 
@@ -48,7 +45,7 @@ def generate(custom_quiz_dir:str = "") -> None:
             print("This number cannot be greater than total number of questions in quiz")
             logger.error("Chosen higher min_to_pass than total number of questions")
 
-    new_quiz_dir = "../data/" + quiz_name + "/" if custom_quiz_dir == "" else custom_quiz_dir + quiz_name + "/"
+    new_quiz_dir = "data/" + quiz_name + "/"
     os.makedirs(new_quiz_dir) # katalog utworzony
     logger.info("Directory for quiz created successfully. Quiz data stored inside: %s", new_quiz_dir)
 
@@ -56,6 +53,7 @@ def generate(custom_quiz_dir:str = "") -> None:
     with open(new_quiz_dir + "config.yaml", 'w') as file:
         logger.info("Configuration file created")
 
+        file.write(f"quiz_name: {quiz_name}\n")
         file.write(f"number_of_questions: {number_of_questions}\n")
         file.write(f"minimum_to_pass: {minimum_to_pass}\n")
 
