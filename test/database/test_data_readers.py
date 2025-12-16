@@ -1,8 +1,7 @@
+import pytest
 import logging
 
-import pytest
-
-from data import data_reader
+from database import data_reader
 
 @pytest.mark.parametrize(
     "file_format",
@@ -17,9 +16,9 @@ def test_for_correct_file(caplog, file_format):
     with caplog.at_level(logging.INFO):
         match file_format:
             case "json":
-                data = data_reader.read_file("test/data_reader/data/data.json", 'json')
+                data = data_reader.read_file("test/database/data/data.json", 'json')
             case "csv":
-                data = data_reader.read_file("test/data_reader/data/data.csv", 'csv')
+                data = data_reader.read_file("test/database/data/data.csv", 'csv')
 
     assert type(data) == list
     assert len(data) == 10
@@ -65,9 +64,9 @@ def test_for_non_existing_file(caplog, file_format):
     with caplog.at_level(logging.ERROR):
         match file_format:
             case "json":
-                data = data_reader.read_file("test/data_reader/data/not_exist.json", 'json')
+                data = data_reader.read_file("test/database/data/not_exist.json", 'json')
             case "csv":
-                data = data_reader.read_file("test/data_reader/data/not_exist.csv", 'csv')
+                data = data_reader.read_file("test/database/data/not_exist.csv", 'csv')
 
     assert data is None
     assert f"There is no such file as not_exist.{file_format}" in caplog.messages

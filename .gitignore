@@ -6,8 +6,11 @@ coverage.xml
 __pycache__
 */__pycache__
 
-data/*
-!data/data_reader.py
+database/*
+!database/data_reader.py
+!database/quiz_generator.py
 
 logs/*
-!logs/logs_initializer.py
+!logs/.gitkeep
+
+todo.md
