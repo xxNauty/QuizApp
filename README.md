@@ -1,6 +1,6 @@
 # QuizApp
 
-It is a simple Python-based quiz game with TUI(Terminal User Interface). Supports quizzes with one of three correct answer
+It is a simple Python-based quiz game with TUI(Terminal User Interface). Supports quizzes with one of three answer correct.
 
 ## Requirements
 - Python 3.8+
@@ -17,27 +17,33 @@ cd QuizApp
 python main.py
 ```
 
-## Custom quiz database
+## Create own quiz database
 App for now accepts questions in `CSV` and `JSON` formats.
 1. Sample of the `CSV` file
 ```csv
-NUMER_PYTANIA,PYTANIE,ODP_A,ODP_B,ODP_C,POPRAWNA,ZRODLO
+id,question,answer_a,answer_b,answer_c,correct,source
 1,"Content of the question","answer A","answer B","answer C","correct answer (A/B/C)","Optional field, where you can put additional information that can prove the correct answer"
 ```
 2. Sample of the `JSON` file
 ```json
 [
-  {"NUMER_PYTANIA":1,"PYTANIE":"Content of the question","ODP_A":"answer A","ODP_B":"answer B","ODP_C":"answer C","POPRAWNA":"correct answer (A/B/C)","ZRODLO":"Optional field, where you can put additional information that can prove the correct answer"}
+  {
+    "id":1,
+    "question":"Content of the question",
+    "answer_a":"answer A",
+    "answer_b":"answer B",
+    "answer_c":"answer C",
+    "correct":"correct answer (A/B/C)",
+    "source":"Optional field, where you can put additional information that can prove the correct answer"}
 ]
 ```
-For every new quiz database you should create new directory inside the `data` directory. For database create the `data.csv` or `data.json` file and for the configuration create the `config.yaml` file. \
-Inside of it, you can define the name of the quiz, how many questions should be drawn for every quiz and how many correct answers are required to pass it. 
 
-You can also use script located inside the `scripts\quiz_template_generator.py` file which can do it for you. Just answer its questions and the templates for new quiz will be generated.
+If you want to create new quiz, you can use script located inside the `scripts\quiz_template_generator.py` 
+file which can do it for you. Just answer its questions and the templates for new quiz will be generated.
 
 You can run it with:
 ```bash
-python scripts/quiz_template_generator.py
+python -m scripts.quiz_template_generator
 ```
 You will be asked four questions, you need to write:
 1. The name of quiz
@@ -52,4 +58,15 @@ Sample config file:
 quiz_name: name_of_the_quiz
 number_of_questions: 20
 minimum_to_pass: 18
+integrity_verified: false
+```
+
+Now you can fill the database file with questions. But it's not the end of work. When the file is ready, 
+you have to run script located inside the `scripts\data_integrity_checker.py` to check if everything is ok with your database.
+If there are any errors inside, it will tell you where the problems are. If everything is correct, it will mark this database
+as checked, and it will make it available for use (If you try to use unverified database it will tell you that you cannot).
+
+You can run this script with: (replace {name_of_quiz} with actual name of quiz you want to check)
+```bash
+python -m scripts.data_integrity_checker {name_of_quiz}
 ```
