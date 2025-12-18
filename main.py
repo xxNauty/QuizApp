@@ -78,7 +78,7 @@ def play(directory_of_data: str) -> None:
     number_of_questions, minimum_to_pass, quiz_name, verified = read_configuration_of_quiz(directory_of_data, len(questions))
 
     if not verified:
-        print("You cannot use unverified database for quiz, check it's integrity before using script located into /scripts directory.")
+        print("You cannot use unverified database for quiz, check it's integrity before using.")
         logger.error("Attempt to use unverified database")
         sys.exit()
 
