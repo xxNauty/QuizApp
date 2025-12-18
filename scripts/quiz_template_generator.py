@@ -5,7 +5,7 @@ from datetime import datetime
 
 logging.basicConfig(
     level=logging.INFO,
-    filename=f"script_logs/quiz_template_generator/{datetime.now().strftime("%d_%m_%Y")}_logs.log",
+    filename=f"scripts/script_logs/quiz_template_generator/{datetime.now().strftime("%d_%m_%Y")}_logs.log",
     filemode='a',
     format='%(asctime)s %(levelname)s %(name)s: %(message)s',
     encoding='utf-8'
