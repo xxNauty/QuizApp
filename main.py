@@ -1,7 +1,7 @@
 import sys
-
 import yaml
 import logging
+import argparse
 
 from os import path
 from datetime import datetime
@@ -43,6 +43,7 @@ def read_question_database(directory_of_data) -> list|None:
     return questions
 
 def play(directory_of_data: str) -> None:
+    directory_of_data = "database/" + directory_of_data + "/"
     questions = read_question_database(directory_of_data)
     number_of_questions, minimum_to_pass, quiz_name, verified = read_configuration_of_quiz(directory_of_data)
 
@@ -109,5 +110,10 @@ def play(directory_of_data: str) -> None:
             print(f"Correct answer: \n\t{correct_answer}")
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("path_to_quiz", type=str)
+
+    args = parser.parse_args()
+
     logger.info("-------------------------------------")
-    play("database/pozwolenie-na-bron/")
+    play(args.path_to_quiz)
