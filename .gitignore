@@ -14,3 +14,9 @@ logs/*
 !logs/.gitkeep
 
 todo.md
+
+scripts/script_logs/data_integrity_checker/*
+!scripts/script_logs/data_integrity_checker/.gitkeep
+
+scripts/script_logs/quiz_template_generator/*
+!scripts/script_logs/quiz_template_generator/.gitkeep

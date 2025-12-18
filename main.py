@@ -16,18 +16,20 @@ logging.basicConfig(
 )
 logger = logging.getLogger("main.py")
 
-def read_configuration_of_quiz(directory_of_data, number_of_questions_in_database) -> tuple[int, int, str]:
+def read_configuration_of_quiz(directory_of_data, number_of_questions_in_database) -> tuple[int, int, str, bool]:
     try:
         with open(directory_of_data + "config.yaml") as file:
             data = yaml.load(file, Loader=yaml.SafeLoader)
             quiz_name = data['quiz_name']
             number_of_questions = data['number_of_questions']
             minimum_to_pass = data['minimum_to_pass']
+            verified = bool(data['integrity_verified'])
+
             logger.info("Configuration read from config.yaml file.")
             logger.info(f"Topic of the quiz: {quiz_name}")
 
             file.close()
-        return number_of_questions, minimum_to_pass, quiz_name
+        return number_of_questions, minimum_to_pass, quiz_name, verified
 
     except FileNotFoundError:
         print("There is no file with configuration. You have to pass the settings now")
@@ -57,7 +59,7 @@ def read_configuration_of_quiz(directory_of_data, number_of_questions_in_databas
                 print(f"You cannot set minimum to pass to higher number than total number of questions in quiz({number_of_questions})")
                 logger.error("Incorrect min_to_pass value")
 
-        return number_of_questions, minimum_to_pass, quiz_name
+        return number_of_questions, minimum_to_pass, quiz_name, True
 
 def read_question_database(directory_of_data) -> list|None:
     if path.exists(directory_of_data + "data.json"):
@@ -73,7 +75,13 @@ def read_question_database(directory_of_data) -> list|None:
 
 def play(directory_of_data: str) -> None:
     questions = read_question_database(directory_of_data)
-    number_of_questions, minimum_to_pass, quiz_name = read_configuration_of_quiz(directory_of_data, len(questions))
+    number_of_questions, minimum_to_pass, quiz_name, verified = read_configuration_of_quiz(directory_of_data, len(questions))
+
+    if not verified:
+        print("You cannot use unverified database for quiz, check it's integrity before using.")
+        logger.error("Attempt to use unverified database")
+        sys.exit()
+
     quiz = quiz_generator.generate_quiz(questions, number_of_questions) # losowanie pytań do quizu
 
     logger.info("----Game Starts----")

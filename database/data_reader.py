@@ -4,7 +4,7 @@ import logging
 
 logger = logging.getLogger('data_reader.py')
 
-def read_file(filename: str, file_format: str) -> list[dict]|None:
+def read_file(filename: str, file_format: str, disable_logs = False) -> list[dict]|None:
     try:
         with open(file=filename, mode='r', encoding="utf8") as file:
             questions = []
@@ -20,7 +20,8 @@ def read_file(filename: str, file_format: str) -> list[dict]|None:
                 question['id'] = int(question['id'])
                 questions.append(question)
 
-            logger.info("Questions read successfully from the %s file(%s), there are %s questions", filename.split("/")[-1], file_format.upper(),  len(questions))
+            if not disable_logs:
+                logger.info("Questions read successfully from the %s file(%s), there are %s questions",filename.split("/")[-1], file_format.upper(), len(questions))
             file.close()
 
             return questions

@@ -5,7 +5,7 @@ from datetime import datetime
 
 logging.basicConfig(
     level=logging.INFO,
-    filename=f"logs/{datetime.now().strftime("%d_%m_%Y")}_logs.log",
+    filename=f"script_logs/quiz_template_generator/{datetime.now().strftime("%d_%m_%Y")}_logs.log",
     filemode='a',
     format='%(asctime)s %(levelname)s %(name)s: %(message)s',
     encoding='utf-8'
@@ -54,6 +54,7 @@ def generate() -> None:
         file.write(f"quiz_name: {quiz_name}\n")
         file.write(f"number_of_questions: {number_of_questions}\n")
         file.write(f"minimum_to_pass: {minimum_to_pass}\n")
+        file.write("integrity_verified: false")
 
         logger.info("Configuration file filled with data")
 
