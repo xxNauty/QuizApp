@@ -12,9 +12,9 @@ It is a simple Python-based quiz game with TUI(Terminal User Interface). Support
 git clone https://github.com/xxNauty/QuizApp.git
 cd QuizApp
 ```
-2. Run the app:
+2. Run the app: (replace {name_of_quiz} with actual name of quiz)
 ```bash
-python main.py
+python main.py {name_of_quiz}
 ```
 
 ## Create own quiz database
