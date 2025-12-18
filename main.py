@@ -16,50 +16,19 @@ logging.basicConfig(
 )
 logger = logging.getLogger("main.py")
 
-def read_configuration_of_quiz(directory_of_data, number_of_questions_in_database) -> tuple[int, int, str, bool]:
-    try:
-        with open(directory_of_data + "config.yaml") as file:
-            data = yaml.load(file, Loader=yaml.SafeLoader)
-            quiz_name = data['quiz_name']
-            number_of_questions = data['number_of_questions']
-            minimum_to_pass = data['minimum_to_pass']
-            verified = bool(data['integrity_verified'])
+def read_configuration_of_quiz(directory_of_data) -> tuple[int, int, str, bool]:
+    with open(directory_of_data + "config.yaml") as file:
+        data = yaml.load(file, Loader=yaml.SafeLoader)
+        quiz_name = data['quiz_name']
+        number_of_questions = data['number_of_questions']
+        minimum_to_pass = data['minimum_to_pass']
+        verified = bool(data['integrity_verified'])
 
-            logger.info("Configuration read from config.yaml file.")
-            logger.info(f"Topic of the quiz: {quiz_name}")
-
-            file.close()
-        return number_of_questions, minimum_to_pass, quiz_name, verified
-
-    except FileNotFoundError:
-        print("There is no file with configuration. You have to pass the settings now")
-
-        quiz_name = "No title for quiz"
-
-        logger.info("Configuration file not found, read from user input")
+        logger.info("Configuration read from config.yaml file.")
         logger.info(f"Topic of the quiz: {quiz_name}")
 
-        correct_number_of_questions = False
-        number_of_questions = 0
-        while not correct_number_of_questions:
-            number_of_questions = int(input("How many questions should the test have?"))
-            if number_of_questions <= number_of_questions_in_database:
-                correct_number_of_questions = True
-            else:
-                print(f"There is not enough questions in database to form such long quiz, choose number smaller than or equal to {number_of_questions_in_database}")
-                logger.error("Incorrect number of questions per quiz value")
-
-        correct_min_to_pass = False
-        minimum_to_pass = 0
-        while not correct_min_to_pass:
-            minimum_to_pass = int(input("How many answers have to be correct in order to pass?"))
-            if minimum_to_pass <= number_of_questions:
-                correct_min_to_pass = True
-            else:
-                print(f"You cannot set minimum to pass to higher number than total number of questions in quiz({number_of_questions})")
-                logger.error("Incorrect min_to_pass value")
-
-        return number_of_questions, minimum_to_pass, quiz_name, True
+        file.close()
+    return number_of_questions, minimum_to_pass, quiz_name, verified
 
 def read_question_database(directory_of_data) -> list|None:
     if path.exists(directory_of_data + "data.json"):
@@ -75,7 +44,7 @@ def read_question_database(directory_of_data) -> list|None:
 
 def play(directory_of_data: str) -> None:
     questions = read_question_database(directory_of_data)
-    number_of_questions, minimum_to_pass, quiz_name, verified = read_configuration_of_quiz(directory_of_data, len(questions))
+    number_of_questions, minimum_to_pass, quiz_name, verified = read_configuration_of_quiz(directory_of_data)
 
     if not verified:
         print("You cannot use unverified database for quiz, check it's integrity before using.")
