@@ -5,13 +5,16 @@ import logging
 import argparse
 
 from datetime import datetime
+from dotenv import load_dotenv
 from database import data_reader
+
+load_dotenv()
 
 logging.basicConfig(
     level=logging.INFO,
     filename=f"scripts/script_logs/data_integrity_checker/{datetime.now().strftime("%d_%m_%Y")}_logs.log",
     filemode='a',
-    format='%(asctime)s %(levelname)s %(name)s: %(message)s',
+    format=os.getenv("LOGS_FORMAT"),
     encoding='utf-8'
 )
 logger = logging.getLogger("quiz_template_generator.py")
@@ -22,15 +25,15 @@ def verify(path_to_quiz: str) -> None:
     has_errors = False
 
     # sprawdzenie formatu pliku bazodanowego
-    if os.path.exists("database/" + path_to_quiz + "/data.json"):
+    if os.path.exists(os.getenv("DATABASE_PATH") + path_to_quiz + "/data.json"):
         file_format = "json"
-    elif os.path.exists("database/" + path_to_quiz + "/data.csv"):
+    elif os.path.exists(os.getenv("DATABASE_PATH") + path_to_quiz + "/data.csv"):
         file_format = "csv"
     else:
         logger.error("There is no such file, or file format is not supported")
         sys.exit()
 
-    with open("database/" + path_to_quiz + f"/data.{file_format}", 'r+', encoding="utf8") as file:
+    with open(os.getenv("DATABASE_PATH") + path_to_quiz + f"/data.{file_format}", 'r+', encoding="utf8") as file:
         lines_of_data = file.read().splitlines()
 
         # sprawdzenie czy liczba linii się zgadza
@@ -101,7 +104,7 @@ def verify(path_to_quiz: str) -> None:
             number_of_line += 1
 
         # sprawdzenie poprawności danych
-        questions = data_reader.read_file("database/" + path_to_quiz + f"/data.{file_format}", file_format="json", disable_logs=True)
+        questions = data_reader.read_file(os.getenv("DATABASE_PATH") + path_to_quiz + f"/data.{file_format}", file_format="json", disable_logs=True)
 
         for question in questions:
             # sprawdzenie poprawności pola "correct"
@@ -115,12 +118,12 @@ def verify(path_to_quiz: str) -> None:
             has_errors = True
 
     if not has_errors:
-        with open("database/" + path_to_quiz + "/config.yaml", 'r') as file:
+        with open(os.getenv("DATABASE_PATH") + path_to_quiz + os.getenv("QUIZ_CONFIG_FILE"), 'r') as file:
             data_from_file = yaml.safe_load(file)
             file.close()
         data_from_file['integrity_verified'] = True
 
-        with open("database/" + path_to_quiz + "/config.yaml", 'w') as file:
+        with open(os.getenv("DATABASE_PATH") + path_to_quiz + os.getenv("QUIZ_CONFIG_FILE"), 'w') as file:
             yaml.dump(data_from_file, file, sort_keys=False)
             file.close()
 
