@@ -93,21 +93,28 @@ def play(directory_of_data: str) -> None:
 
     logger.info("Quiz ended")
 
-    if correct_answers >= minimum_to_pass:
-        print(f"Congratulations! You passed!({correct_answers}/{number_of_questions})\nHere are your results:")
-        logger.info(f"Test passed({correct_answers}/{number_of_questions})")
-    else:
-        print(f"You failed, your score is {correct_answers}/{number_of_questions}. You need to have at least {minimum_to_pass} correct answers to pass\nHere are your results:")
-        logger.info(f"Test failed({correct_answers}/{number_of_questions})")
-
+    print("\nHere are your results:")
+    wrong_answers = []
     for i, single_result in enumerate(answers):
         question, chosen_answer, is_correct, correct_answer = single_result
-        print(f"\nQuestion number {i + 1}: {question}")
-        print(f"Your choice: \n\t{chosen_answer}")
-        if is_correct:
-            print("Your answer is correct!")
-        else:
+        if not is_correct:
+            wrong_answers.append(i + 1)
+            print(f"\nQuestion number {i + 1}: {question}")
+            print(f"Your choice: \n\t{chosen_answer}")
             print(f"Correct answer: \n\t{correct_answer}")
+
+    print("\n------------------------------")
+    if correct_answers >= minimum_to_pass:
+        print(f"Congratulations! You passed!({correct_answers}/{number_of_questions})")
+        logger.info(f"Test passed({correct_answers}/{number_of_questions})")
+    else:
+        print(f"You failed({correct_answers}/{number_of_questions}).\nYou need to have at least {minimum_to_pass} correct answers to pass")
+        logger.info(f"Test failed({correct_answers}/{number_of_questions})")
+
+    if len(wrong_answers) > 0:
+        print("Wrong answers in questions number:\n\t", ", ".join(map(str, wrong_answers)))
+    print("------------------------------")
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
