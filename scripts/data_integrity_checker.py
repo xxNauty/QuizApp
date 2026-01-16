@@ -12,7 +12,7 @@ load_dotenv()
 
 logging.basicConfig(
     level=logging.INFO,
-    filename=f"scripts/script_logs/data_integrity_checker/{datetime.now().strftime("%d_%m_%Y")}_logs.log",
+    filename=f"scripts/script_logs/data_integrity_checker/{datetime.now().strftime("%Y_%m_%d")}_logs.log",
     filemode='a',
     format=os.getenv("LOGS_FORMAT"),
     encoding='utf-8'
