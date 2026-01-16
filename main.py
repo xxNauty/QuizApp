@@ -1,23 +1,26 @@
+import os
 import sys
 import yaml
 import logging
 import argparse
 
-from os import path
 from datetime import datetime
+from dotenv import load_dotenv
 from database import data_reader, quiz_generator
+
+load_dotenv()
 
 logging.basicConfig(
     level=logging.INFO,
     filename=f"logs/{datetime.now().strftime("%d_%m_%Y")}_logs.log",
     filemode='a',
-    format='%(asctime)s %(levelname)s %(name)s: %(message)s',
+    format=os.getenv("LOGS_FORMAT"),
     encoding='utf-8'
 )
 logger = logging.getLogger("main.py")
 
 def read_configuration_of_quiz(directory_of_data) -> tuple[int, int, str, bool]:
-    with open(directory_of_data + "config.yaml") as file:
+    with open(directory_of_data + os.getenv("QUIZ_CONFIG_FILE")) as file:
         data = yaml.load(file, Loader=yaml.SafeLoader)
         quiz_name = data['quiz_name']
         number_of_questions = data['number_of_questions']
@@ -31,11 +34,11 @@ def read_configuration_of_quiz(directory_of_data) -> tuple[int, int, str, bool]:
     return number_of_questions, minimum_to_pass, quiz_name, verified
 
 def read_question_database(directory_of_data) -> list|None:
-    if path.exists(directory_of_data + "data.json"):
-        questions = data_reader.read_file(directory_of_data + "data.json", 'json')
+    if os.path.exists(directory_of_data + os.getenv("DATABASE_FILE_JSON")):
+        questions = data_reader.read_file(directory_of_data + os.getenv("DATABASE_FILE_JSON"), 'json')
         logger.info("Questions read from the JSON file")
-    elif path.exists(directory_of_data + "data.csv"):
-        questions = data_reader.read_file(directory_of_data + "data.json", 'csv')
+    elif os.path.exists(directory_of_data + os.getenv("DATABASE_FILE_CSV")):
+        questions = data_reader.read_file(directory_of_data + os.getenv("DATABASE_FILE_CSV"), 'csv')
         logger.info("Questions read from the CSV file")
     else:
         logger.error("There is no file with questions")
@@ -43,7 +46,7 @@ def read_question_database(directory_of_data) -> list|None:
     return questions
 
 def play(directory_of_data: str) -> None:
-    directory_of_data = "database/" + directory_of_data + "/"
+    directory_of_data = os.getenv("DATABASE_PATH") + directory_of_data + "/"
     questions = read_question_database(directory_of_data)
     number_of_questions, minimum_to_pass, quiz_name, verified = read_configuration_of_quiz(directory_of_data)
 
