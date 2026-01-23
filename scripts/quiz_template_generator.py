@@ -14,7 +14,7 @@ logger = logging.getLogger("quiz_template_generator.py")
 
 def generate() -> None:
     quiz_name = input("Name this quiz: ")
-    quiz_name = quiz_name.lower().replace(" ", "-")
+    quiz_name = quiz_name.lower().replace(" ", "_")
 
     database_format = ""
     correct_format = False
@@ -44,23 +44,20 @@ def generate() -> None:
             logger.error("Chosen higher min_to_pass than total number of questions")
 
     new_quiz_dir = "database/" + quiz_name + "/"
-    os.makedirs(new_quiz_dir) # katalog utworzony
+    os.makedirs(new_quiz_dir)
     logger.info("Directory for quiz created successfully. Quiz data stored inside: %s", new_quiz_dir)
 
-    # plik konfiguracyjny utworzony
     with open(new_quiz_dir + "config.yaml", 'w') as file:
         logger.info("Configuration file created")
 
         file.write(f"quiz_name: {quiz_name}\n")
         file.write(f"number_of_questions: {number_of_questions}\n")
         file.write(f"minimum_to_pass: {minimum_to_pass}\n")
-        file.write("integrity_verified: false")
 
         logger.info("Configuration file filled with data")
 
         file.close()
 
-    # utworzenie pustego pliku dla bazy pytań
     with open(new_quiz_dir + "data." + database_format, 'w') as file:
         logger.info("Database for questions created")
         file.close()

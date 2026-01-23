@@ -1,12 +1,12 @@
 import os
-import sys
 import yaml
 import logging
 import argparse
 
 from datetime import datetime
 from dotenv import load_dotenv
-from database import data_reader, quiz_generator
+from database import data_reader
+import quiz_generator
 
 load_dotenv()
 
@@ -19,41 +19,23 @@ logging.basicConfig(
 )
 logger = logging.getLogger("main.py")
 
-def read_configuration_of_quiz(directory_of_data) -> tuple[int, int, str, bool]:
+def read_configuration_of_quiz(directory_of_data) -> tuple[int, int, str]:
     with open(directory_of_data + os.getenv("QUIZ_CONFIG_FILE")) as file:
         data = yaml.load(file, Loader=yaml.SafeLoader)
         quiz_name = data['quiz_name']
         number_of_questions = data['number_of_questions']
         minimum_to_pass = data['minimum_to_pass']
-        verified = bool(data['integrity_verified'])
 
         logger.info("Configuration read from config.yaml file.")
         logger.info(f"Topic of the quiz: {quiz_name}")
 
         file.close()
-    return number_of_questions, minimum_to_pass, quiz_name, verified
-
-def read_question_database(directory_of_data) -> list|None:
-    if os.path.exists(directory_of_data + os.getenv("DATABASE_FILE_JSON")):
-        questions = data_reader.read_file(directory_of_data + os.getenv("DATABASE_FILE_JSON"), 'json')
-        logger.info("Questions read from the JSON file")
-    elif os.path.exists(directory_of_data + os.getenv("DATABASE_FILE_CSV")):
-        questions = data_reader.read_file(directory_of_data + os.getenv("DATABASE_FILE_CSV"), 'csv')
-        logger.info("Questions read from the CSV file")
-    else:
-        logger.error("There is no file with questions")
-        return None
-    return questions
+    return number_of_questions, minimum_to_pass, quiz_name
 
 def play(directory_of_data: str) -> None:
     directory_of_data = os.getenv("DATABASE_PATH") + directory_of_data + "/"
-    questions = read_question_database(directory_of_data)
-    number_of_questions, minimum_to_pass, quiz_name, verified = read_configuration_of_quiz(directory_of_data)
-
-    if not verified:
-        print("You cannot use unverified database for quiz, check it's integrity before using.")
-        logger.error("Attempt to use unverified database")
-        sys.exit()
+    number_of_questions, minimum_to_pass, quiz_name = read_configuration_of_quiz(directory_of_data)
+    questions = data_reader.read_database(quiz_name)
 
     quiz = quiz_generator.generate_quiz(questions, number_of_questions) # losowanie pytań do quizu
 

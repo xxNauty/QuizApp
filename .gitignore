@@ -8,15 +8,14 @@ __pycache__
 
 database/*
 !database/data_reader.py
-!database/quiz_generator.py
 
 logs/*
 !logs/.gitkeep
 
 todo.md
 
-scripts/script_logs/data_integrity_checker/*
-!scripts/script_logs/data_integrity_checker/.gitkeep
+scripts/script_logs/import_new_database/*
+!scripts/script_logs/import_new_database/.gitkeep
 
 scripts/script_logs/quiz_template_generator/*
 !scripts/script_logs/quiz_template_generator/.gitkeep
