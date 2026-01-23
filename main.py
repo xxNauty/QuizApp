@@ -6,7 +6,9 @@ import argparse
 from datetime import datetime
 from dotenv import load_dotenv
 from database import data_reader
-import quiz_generator
+
+from quiz_generator import generate_quiz
+from update_statistics import update_statistics_for_question
 
 load_dotenv()
 
@@ -37,7 +39,7 @@ def play(directory_of_data: str) -> None:
     number_of_questions, minimum_to_pass, quiz_name = read_configuration_of_quiz(directory_of_data)
     questions = data_reader.read_database(quiz_name)
 
-    quiz = quiz_generator.generate_quiz(questions, number_of_questions) # losowanie pytań do quizu
+    quiz = generate_quiz(questions, number_of_questions) # losowanie pytań do quizu
 
     logger.info("----Game Starts----")
 
@@ -71,7 +73,7 @@ def play(directory_of_data: str) -> None:
             case 'C':
                 correct_answer = quiz[i]['answer_c']
 
-        answers.append((quiz[i]['question'], chosen_answer, choice.upper() == quiz[i]['correct'], correct_answer))
+        answers.append((quiz[i]['question'], chosen_answer, choice.upper() == quiz[i]['correct'], correct_answer, quiz[i]['id']))
         logger.info(f"For question number {i + 1} user chose answer |{choice}|. It's {"Correct" if choice.upper() == quiz[i]['correct'] else "Wrong"}!")
         if choice.upper() == quiz[i]['correct']:
             correct_answers += 1
@@ -81,7 +83,8 @@ def play(directory_of_data: str) -> None:
     print("\nHere are your results:")
     wrong_answers = []
     for i, single_result in enumerate(answers):
-        question, chosen_answer, is_correct, correct_answer = single_result
+        question, chosen_answer, is_correct, correct_answer, question_id = single_result
+        update_statistics_for_question(quiz_name, question_id, is_correct)
         if not is_correct:
             wrong_answers.append(i + 1)
             print(f"\nQuestion number {i + 1}: {question}")
