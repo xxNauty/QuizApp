@@ -19,3 +19,9 @@ scripts/script_logs/import_new_database/*
 
 scripts/script_logs/quiz_template_generator/*
 !scripts/script_logs/quiz_template_generator/.gitkeep
+
+scripts/script_logs/statistics_report_generator/*
+!scripts/script_logs/statistics_report_generator/.gitkeep
+
+reports/*
+!reports/.gitkeep
