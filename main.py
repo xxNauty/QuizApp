@@ -22,16 +22,22 @@ logger = logging.getLogger(__name__)
 load_dotenv()
 
 def read_configuration_of_quiz(directory_of_data) -> tuple[int, int, str]:
-    with open(directory_of_data + os.getenv("QUIZ_CONFIG_FILE")) as file:
-        data = yaml.load(file, Loader=yaml.SafeLoader)
-        quiz_name = data['quiz_name']
-        number_of_questions = data['number_of_questions']
-        minimum_to_pass = data['minimum_to_pass']
-
+    try:
+        with open(directory_of_data + os.getenv("QUIZ_CONFIG_FILE")) as file:
+            data = yaml.load(file, Loader=yaml.SafeLoader)
+    except IOError as error:
+        pass
+    except yaml.YAMLError as error:
+        pass
+    else:
         logger.info("Configuration read from config.yaml file.")
-        logger.info(f"Topic of the quiz: {quiz_name}")
 
-        file.close()
+    quiz_name = data['quiz_name']
+    number_of_questions = data['number_of_questions']
+    minimum_to_pass = data['minimum_to_pass']
+
+    logger.info(f"Name of the quiz: {quiz_name}")
+
     return number_of_questions, minimum_to_pass, quiz_name
 
 def play(directory_of_data: str) -> None:

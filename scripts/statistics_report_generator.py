@@ -19,18 +19,25 @@ logger = logging.getLogger(__name__)
 load_dotenv()
 
 def generate(quiz_name: str, format_of_report: str) -> None:
-    database_connection = sqlite3.connect(os.getenv("DATABASE_PATH"))
-    database_connection.row_factory = sqlite3.Row
-    cursor = database_connection.cursor()
+    try:
+        with sqlite3.connect(os.getenv("DATABASE_PATH")) as database_connection:
+            database_connection.row_factory = sqlite3.Row
+            cursor = database_connection.cursor()
 
-    cursor.execute(f"""
-        SELECT * FROM {quiz_name} 
-        JOIN {quiz_name}_statistics 
-        ON {quiz_name}.id = {quiz_name}_statistics.question_id
-    """)
+            cursor.execute(f"""
+                SELECT * FROM {quiz_name} 
+                JOIN {quiz_name}_statistics 
+                ON {quiz_name}.id = {quiz_name}_statistics.question_id
+            """)
+    except sqlite3.DatabaseError as error:
+        logger.error(f"There was an error during the reading questions from the database: {error}")
+    except Exception as error:
+        logger.error(f"AN UNEXPECTED ERROR HAPPENED: {error}")
+    else:
+        logger.info("Questions read with it's statistics")
 
     questions_with_statistics = [dict(row) for row in cursor.fetchall()]
-    logger.info("Questions read with it's statistics")
+
 
     prepared_statistics = []
     additional_statistics = {
@@ -77,29 +84,49 @@ def generate(quiz_name: str, format_of_report: str) -> None:
 
         prepared_statistics.append(statistics_for_question)
 
-    match format_of_report.lower():
-        case "csv":
-            _generate_csv(prepared_statistics)
-        case "json":
-            _generate_json(prepared_statistics)
-        case "pdf":
-            _generate_pdf(prepared_statistics, additional_statistics)
+    os.makedirs("reports", exist_ok=True)
+
+    try:
+        match format_of_report.lower():
+            case "csv":
+                _generate_csv(prepared_statistics)
+            case "json":
+                _generate_json(prepared_statistics)
+            case "pdf":
+                _generate_pdf(prepared_statistics, additional_statistics)
+    except NotImplementedError as error:
+        logger.error(f"There was an error during the generation of the report: {error}")
+    except Exception as error:
+        logger.error(f"AN UNEXPECTED ERROR HAPPENED: {error}")
+    else:
+        logger.info("Report generated successfully")
 
 
 def _generate_csv(statistics: list[dict]) -> None:
     field_names = ['question', 'times_chosen', 'times_correct', 'percent_correct', 'difficulty']
 
-    with open(os.getenv("REPORTS_PATH") + datetime.now().strftime(os.getenv("REPORTS_DATA_FORMAT")) + ".csv", "w", newline="", encoding="utf-8") as file:
-        writer = csv.DictWriter(file, fieldnames=field_names)
-        writer.writeheader()
-        writer.writerows(statistics)
-
-        file.close()
+    try:
+        with open(os.getenv("REPORTS_PATH") + datetime.now().strftime(os.getenv("REPORTS_DATA_FORMAT")) + ".csv", "w", newline="", encoding="utf-8") as file:
+            writer = csv.DictWriter(file, fieldnames=field_names) # statistics[0].keys()
+            writer.writeheader()
+            writer.writerows(statistics)
+    except IOError as error:
+        logger.error(f"There was an error during the writing to a CSV file: {error}")
+    except csv.Error as error:
+        logger.error(f"There was an error related with a CSV module: {error}")
+    else:
+        logger.info("CSV report created")
 
 def _generate_json(statistics: list[dict]) -> None:
-    with open(os.getenv("REPORTS_PATH") + datetime.now().strftime(os.getenv("REPORTS_DATA_FORMAT")) + ".json", "w", encoding="utf-8") as file:
-        json.dump(statistics, file, indent=2, ensure_ascii=False) # ensure_ascii=False to keep polish characters as they are
-        file.close()
+    try:
+        with open(os.getenv("REPORTS_PATH") + datetime.now().strftime(os.getenv("REPORTS_DATA_FORMAT")) + ".json", "w", encoding="utf-8") as file:
+            json.dump(statistics, file, indent=2, ensure_ascii=False) # ensure_ascii=False to keep polish characters as they are
+    except IOError as error:
+        logger.error(f"There was an error during the writing to a JSON file: {error}")
+    except json.JSONDecodeError as error:
+        logger.error(f"There was an error related with a JSON module: {error}")
+    else:
+        logger.info("JSON report created")
 
 def _generate_pdf(statistics: list[dict], additional_statistics: dict) -> None:
     raise NotImplementedError("PDF report generation not implemented yet")
