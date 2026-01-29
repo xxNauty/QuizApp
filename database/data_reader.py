@@ -26,8 +26,6 @@ def read_database(quiz_name: str) -> Optional[List[Dict]]:
 
             if len(data) == 0:
                 raise NoDataFoundError(quiz_name)
-            else:
-                return data
     except NoDataFoundError as error:
         logger.error(f"There was an error with the content of the database: {error}")
         return None
@@ -37,3 +35,8 @@ def read_database(quiz_name: str) -> Optional[List[Dict]]:
     except sqlite3.DatabaseError as error:
         logger.error(f"There was an error with the database: {error}")
         return None
+    except Exception as error:
+        logger.error(f"AN UNEXPECTED ERROR HAPPENED: {error}")
+    else:
+        logger.info("Database read successfully")
+        return data
