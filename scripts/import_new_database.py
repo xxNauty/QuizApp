@@ -1,11 +1,13 @@
+import os
 import csv
+import sys
 import json
 import sqlite3
 import logging
 import argparse
-import sys
 
 from datetime import datetime
+from dotenv import load_dotenv
 
 logging.basicConfig(
     level=logging.INFO,
@@ -14,7 +16,8 @@ logging.basicConfig(
     format='%(asctime)s %(levelname)s %(name)s: %(message)s',
     encoding='utf-8'
 )
-logger = logging.getLogger("import_new_database.py")
+logger = logging.getLogger(__name__)
+load_dotenv()
 
 def validate_inputs(quiz_name: str, format_of_dataset: str) -> None:
     try:
@@ -165,7 +168,7 @@ def import_database(quiz_name: str, format_of_dataset:str):
     quiz_name = quiz_name.replace("-", "_")
 
     try:
-        with sqlite3.connect("database/database.db") as database_connection:
+        with sqlite3.connect(os.getenv("DATABASE_PATH")) as database_connection:
             cursor = database_connection.cursor()
 
             create_tables(quiz_name, cursor)

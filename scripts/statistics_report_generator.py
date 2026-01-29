@@ -1,3 +1,4 @@
+import os
 import csv
 import json
 import sqlite3
@@ -5,6 +6,7 @@ import logging
 import argparse
 
 from datetime import datetime
+from dotenv import load_dotenv
 
 logging.basicConfig(
     level=logging.INFO,
@@ -13,10 +15,11 @@ logging.basicConfig(
     format='%(asctime)s %(levelname)s %(name)s: %(message)s',
     encoding='utf-8'
 )
-logger = logging.getLogger("statistics_report_generator.py")
+logger = logging.getLogger(__name__)
+load_dotenv()
 
 def generate(quiz_name: str, format_of_report: str) -> None:
-    database_connection = sqlite3.connect("database/database.db")
+    database_connection = sqlite3.connect(os.getenv("DATABASE_PATH"))
     database_connection.row_factory = sqlite3.Row
     cursor = database_connection.cursor()
 
@@ -27,7 +30,7 @@ def generate(quiz_name: str, format_of_report: str) -> None:
     """)
 
     questions_with_statistics = [dict(row) for row in cursor.fetchall()]
-    logger.info("Questions read with it's statistisc")
+    logger.info("Questions read with it's statistics")
 
     prepared_statistics = []
     additional_statistics = {
@@ -86,7 +89,7 @@ def generate(quiz_name: str, format_of_report: str) -> None:
 def _generate_csv(statistics: list[dict]) -> None:
     field_names = ['question', 'times_chosen', 'times_correct', 'percent_correct', 'difficulty']
 
-    with open(f"reports/statistics_{datetime.now().strftime("%Y_%m_%d__%H_%M_%S")}.csv", "w", newline="", encoding="utf-8") as file:
+    with open(os.getenv("REPORTS_PATH") + datetime.now().strftime(os.getenv("REPORTS_DATA_FORMAT")) + ".csv", "w", newline="", encoding="utf-8") as file:
         writer = csv.DictWriter(file, fieldnames=field_names)
         writer.writeheader()
         writer.writerows(statistics)
@@ -94,17 +97,17 @@ def _generate_csv(statistics: list[dict]) -> None:
         file.close()
 
 def _generate_json(statistics: list[dict]) -> None:
-    with open(f"reports/statistics_{datetime.now().strftime("%Y_%m_%d__%H_%M_%S")}.json", "w", encoding="utf-8") as file:
+    with open(os.getenv("REPORTS_PATH") + datetime.now().strftime(os.getenv("REPORTS_DATA_FORMAT")) + ".json", "w", encoding="utf-8") as file:
         json.dump(statistics, file, indent=2, ensure_ascii=False) # ensure_ascii=False to keep polish characters as they are
         file.close()
 
 def _generate_pdf(statistics: list[dict], additional_statistics: dict) -> None:
-    pass
+    raise NotImplementedError("PDF report generation not implemented yet")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Generate report with statistics of every question")
     parser.add_argument("quiz_name", type=str, help="Name of quiz you want to generate statistics of.")
-    parser.add_argument("format_of_report", type=str, help="Choose format in which you want this report. (JSON/CSV/PDF)")
+    parser.add_argument("format_of_report", type=str, help="Choose format in which you want this report. (json/csv/pdf)", choices=['json', 'csv', 'pdf'])
 
     args = parser.parse_args()
 

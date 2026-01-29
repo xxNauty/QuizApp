@@ -1,11 +1,14 @@
+import os
 import logging
 import sqlite3
 
+from dotenv import load_dotenv
 from typing import List, Dict, Optional
 
 from exception.NoDataFoundException import NoDataFoundError
 
 logger = logging.getLogger(__name__)
+load_dotenv()
 
 def read_database(quiz_name: str) -> Optional[List[Dict]]:
     try:
@@ -14,7 +17,7 @@ def read_database(quiz_name: str) -> Optional[List[Dict]]:
             raise ValueError("Invalid table name provided")
 
         #using with statement ensures the connection is automatically closed
-        with sqlite3.connect("database/database.db") as database_connection:
+        with sqlite3.connect(os.getenv("DATABASE_PATH")) as database_connection:
             database_connection.row_factory = sqlite3.Row
             cursor = database_connection.cursor()
 

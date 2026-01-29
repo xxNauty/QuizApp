@@ -2,6 +2,7 @@ import os
 import logging
 
 from datetime import datetime
+from dotenv import load_dotenv
 
 logging.basicConfig(
     level=logging.INFO,
@@ -10,7 +11,8 @@ logging.basicConfig(
     format='%(asctime)s %(levelname)s %(name)s: %(message)s',
     encoding='utf-8'
 )
-logger = logging.getLogger("quiz_template_generator.py")
+logger = logging.getLogger(__name__)
+load_dotenv()
 
 def generate() -> None:
     quiz_name = input("Name this quiz: ")
@@ -43,7 +45,7 @@ def generate() -> None:
             print("This number cannot be greater than total number of questions in quiz")
             logger.error("Chosen higher min_to_pass than total number of questions")
 
-    new_quiz_dir = "database/" + quiz_name + "/"
+    new_quiz_dir = os.getenv("DATASET_PATH") + quiz_name + "/"
     try:
         os.makedirs(new_quiz_dir)
     except OSError as error:
@@ -52,7 +54,7 @@ def generate() -> None:
         logger.info("Directory for quiz created successfully. Quiz data stored inside: %s", new_quiz_dir)
 
     try:
-        with open(new_quiz_dir + "config.yaml", 'w') as file:
+        with open(new_quiz_dir + os.getenv("QUIZ_CONFIG_FILE"), 'w') as file:
             file.write(f"quiz_name: {quiz_name}\n")
             file.write(f"number_of_questions: {number_of_questions}\n")
             file.write(f"minimum_to_pass: {minimum_to_pass}\n")
@@ -72,7 +74,7 @@ def generate() -> None:
         logger.info("Configuration file created and filled with data")
 
     try:
-        with open(new_quiz_dir + "data." + database_format, 'w'):
+        with open(new_quiz_dir + os.getenv("DATABASE_FILE_NAME") + database_format, 'w'):
             pass
     except FileNotFoundError as error:
         logger.error(f"Directory not found, unable to create dataset file: {error}")

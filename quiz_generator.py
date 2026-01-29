@@ -1,7 +1,7 @@
 import random
 import logging
 
-logger = logging.getLogger("quiz_generator.py")
+logger = logging.getLogger(__name__)
 
 def generate_quiz(available_questions: list, number_of_questions: int) -> list[dict]|None:
     ids_of_questions = set()
