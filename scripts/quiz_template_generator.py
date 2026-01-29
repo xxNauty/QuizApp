@@ -44,23 +44,48 @@ def generate() -> None:
             logger.error("Chosen higher min_to_pass than total number of questions")
 
     new_quiz_dir = "database/" + quiz_name + "/"
-    os.makedirs(new_quiz_dir)
-    logger.info("Directory for quiz created successfully. Quiz data stored inside: %s", new_quiz_dir)
+    try:
+        os.makedirs(new_quiz_dir)
+    except OSError as error:
+        logger.error(f"There was an error during the creation of the directory for new quiz: {error}")
+    else:
+        logger.info("Directory for quiz created successfully. Quiz data stored inside: %s", new_quiz_dir)
 
-    with open(new_quiz_dir + "config.yaml", 'w') as file:
-        logger.info("Configuration file created")
+    try:
+        with open(new_quiz_dir + "config.yaml", 'w') as file:
+            file.write(f"quiz_name: {quiz_name}\n")
+            file.write(f"number_of_questions: {number_of_questions}\n")
+            file.write(f"minimum_to_pass: {minimum_to_pass}\n")
+    except FileNotFoundError as error:
+        logger.error(f"Directory not found, unable to create configuration file: {error}")
+    except PermissionError as error:
+        logger.error(f"Permission denied, cannot write to the configuration file: {error}")
+    except TypeError as error:
+        logger.error(f"{error}")
+    except ValueError as error:
+        logger.error(f"{error}")
+    except OSError as error:
+        logger.error(f"{error}")
+    except Exception as error:
+        logger.error(f"An unexpected error happened: {error}")
+    else:
+        logger.info("Configuration file created and filled with data")
 
-        file.write(f"quiz_name: {quiz_name}\n")
-        file.write(f"number_of_questions: {number_of_questions}\n")
-        file.write(f"minimum_to_pass: {minimum_to_pass}\n")
-
-        logger.info("Configuration file filled with data")
-
-        file.close()
-
-    with open(new_quiz_dir + "data." + database_format, 'w') as file:
+    try:
+        with open(new_quiz_dir + "data." + database_format, 'w'):
+            pass
+    except FileNotFoundError as error:
+        logger.error(f"Directory not found, unable to create dataset file: {error}")
+    except TypeError as error:
+        logger.error(f"{error}")
+    except ValueError as error:
+        logger.error(f"{error}")
+    except OSError as error:
+        logger.error(f"{error}")
+    except Exception as error:
+        logger.error(f"An unexpected error happened: {error}")
+    else:
         logger.info("Database for questions created")
-        file.close()
 
 if __name__ == "__main__":
     generate()
