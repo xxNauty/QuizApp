@@ -1,23 +1,31 @@
+import os
 import sqlite3
+import logging
 
-def update_statistics_for_question(name_of_quiz: str, id_of_question: int, correctly_answered: bool) -> None:
-    database_connection = sqlite3.connect(f"database/database.db")
-    database_connection.row_factory = sqlite3.Row
-    cursor = database_connection.cursor()
+from dotenv import load_dotenv
 
-    cursor.execute(f"SELECT * FROM {name_of_quiz}_statistics WHERE question_id LIKE {id_of_question}")
+logger = logging.getLogger(__name__)
+load_dotenv()
 
-    current_statistics = [dict(row) for row in cursor.fetchall()][0]
-    current_statistics['times_chosen'] += 1
-    if correctly_answered:
-        current_statistics['times_correct'] += 1
+def update_statistics_for_question(quiz_name: str, id_of_question: int, correctly_answered: bool) -> None:
+    with sqlite3.connect(os.getenv("DATABASE_PATH")) as database_connection:
+        database_connection.row_factory = sqlite3.Row
+        cursor = database_connection.cursor()
 
-    cursor.execute(f"""
-        UPDATE {name_of_quiz}_statistics 
-        SET 
-        times_chosen = {current_statistics['times_chosen']}, times_correct = {current_statistics['times_correct']}
-        WHERE question_id LIKE {id_of_question}
-        """)
+        cursor.execute(f"SELECT * FROM {quiz_name}_statistics WHERE question_id LIKE {id_of_question}")
 
-    database_connection.commit()
-    database_connection.close()
+        statistics = [dict(row) for row in cursor.fetchall()][0]
+        statistics['times_chosen'] += 1
+        if correctly_answered:
+            statistics['times_correct'] += 1
+
+        update_query = f"""
+            UPDATE {quiz_name}_statistics
+            SET times_chosen=?, times_correct=?
+            WHERE question_id LIKE ?
+        """
+        update_params = (statistics['times_chosen'], statistics['times_correct'], id_of_question)
+
+        cursor.execute(update_query, update_params)
+
+        database_connection.commit()

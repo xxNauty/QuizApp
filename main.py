@@ -10,7 +10,6 @@ from database import data_reader
 from quiz_generator import generate_quiz
 from update_statistics import update_statistics_for_question
 
-load_dotenv()
 
 logging.basicConfig(
     level=logging.INFO,
@@ -19,7 +18,8 @@ logging.basicConfig(
     format=os.getenv("LOGS_FORMAT"),
     encoding='utf-8'
 )
-logger = logging.getLogger("main.py")
+logger = logging.getLogger(__name__)
+load_dotenv()
 
 def read_configuration_of_quiz(directory_of_data) -> tuple[int, int, str]:
     with open(directory_of_data + os.getenv("QUIZ_CONFIG_FILE")) as file:
@@ -35,11 +35,11 @@ def read_configuration_of_quiz(directory_of_data) -> tuple[int, int, str]:
     return number_of_questions, minimum_to_pass, quiz_name
 
 def play(directory_of_data: str) -> None:
-    directory_of_data = os.getenv("DATABASE_PATH") + directory_of_data + "/"
+    directory_of_data = os.getenv("DATASET_PATH") + directory_of_data + "/"
     number_of_questions, minimum_to_pass, quiz_name = read_configuration_of_quiz(directory_of_data)
     questions = data_reader.read_database(quiz_name)
 
-    quiz = generate_quiz(questions, number_of_questions) # losowanie pytań do quizu
+    quiz = generate_quiz(questions, number_of_questions) # choosing questions for quiz
 
     logger.info("----Game Starts----")
 
