@@ -13,12 +13,12 @@ from update_statistics import update_statistics_for_question
 
 logging.basicConfig(
     level=logging.INFO,
-    filename=f"logs/{datetime.now().strftime("%Y_%m_%d")}_logs.log",
+    filename=os.getenv("LOGS_PATH") + datetime.now().strftime("%Y_%m_%d") + ".log",
     filemode='a',
     format=os.getenv("LOGS_FORMAT"),
     encoding='utf-8'
 )
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("main")
 load_dotenv()
 
 def read_configuration_of_quiz(directory_of_data) -> tuple[int, int, str]:
@@ -26,9 +26,11 @@ def read_configuration_of_quiz(directory_of_data) -> tuple[int, int, str]:
         with open(directory_of_data + os.getenv("QUIZ_CONFIG_FILE")) as file:
             data = yaml.load(file, Loader=yaml.SafeLoader)
     except IOError as error:
-        pass
+        logger.error(f"There was an error during the reading of configuration file: {error}")
     except yaml.YAMLError as error:
-        pass
+        logger.error(f"There was an error related with a YAML module: {error}")
+    except Exception as error:
+        logger.error(f"AN UNEXPECTED ERROR HAPPENED: {error}")
     else:
         logger.info("Configuration read from config.yaml file.")
 

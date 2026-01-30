@@ -8,17 +8,31 @@ import argparse
 from datetime import datetime
 from dotenv import load_dotenv
 
+from database.get_list_of_tables import get_list_of_tables
+
 logging.basicConfig(
     level=logging.INFO,
-    filename=f"scripts/script_logs/statistics_report_generator/{datetime.now().strftime("%Y_%m_%d")}_logs.log",
+    filename=os.getenv("LOGS_PATH") + datetime.now().strftime("%Y_%m_%d") + ".log",
     filemode='a',
-    format='%(asctime)s %(levelname)s %(name)s: %(message)s',
+    format=os.getenv("LOGS_FORMAT"),
     encoding='utf-8'
 )
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("script")
 load_dotenv()
 
 def generate(quiz_name: str, format_of_report: str) -> None:
+    try:
+        if not isinstance(quiz_name, str) or quiz_name not in get_list_of_tables():
+            raise ValueError("Invalid table name provided")
+        if not isinstance(format_of_report, str) or format_of_report not in ['json', 'csv']:  # in future also PDF
+            raise ValueError("Invalid or not supported format of report")
+    except ValueError as error:
+        logger.error(f"There was an error during the validation of inputs: {error}")
+    except Exception as error:
+        logger.error(f"AN UNEXPECTED ERROR HAPPENED: {error}")
+    else:
+        logger.info("Given correct inputs")
+
     try:
         with sqlite3.connect(os.getenv("DATABASE_PATH")) as database_connection:
             database_connection.row_factory = sqlite3.Row

@@ -11,12 +11,12 @@ from dotenv import load_dotenv
 
 logging.basicConfig(
     level=logging.INFO,
-    filename=f"scripts/script_logs/import_new_database/{datetime.now().strftime("%Y_%m_%d")}_logs.log",
+    filename=os.getenv("LOGS_PATH") + datetime.now().strftime("%Y_%m_%d") + ".log",
     filemode='a',
-    format='%(asctime)s %(levelname)s %(name)s: %(message)s',
+    format=os.getenv("LOGS_FORMAT"),
     encoding='utf-8'
 )
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("script")
 load_dotenv()
 
 def validate_inputs(quiz_name: str, format_of_dataset: str) -> None:
@@ -28,6 +28,8 @@ def validate_inputs(quiz_name: str, format_of_dataset: str) -> None:
     except ValueError as error:
         logger.critical(f"There was an error with the input parameters: {error}")
         sys.exit()
+    except Exception as error:
+        logger.error(f"AN UNEXPECTED ERROR HAPPENED: {error}")
 
 def create_tables(quiz_name: str, cursor: sqlite3.Cursor) -> None:
     # create table for questions
@@ -46,6 +48,8 @@ def create_tables(quiz_name: str, cursor: sqlite3.Cursor) -> None:
     except sqlite3.DatabaseError as error:
         logger.error(f"There was an error during the creation of the question table: {error}")
         sys.exit()
+    except Exception as error:
+        logger.error(f"AN UNEXPECTED ERROR HAPPENED: {error}")
     else:
         logger.info("Database for question created successfully or already exist")  # TODO: log this two options separately
 
@@ -61,6 +65,8 @@ def create_tables(quiz_name: str, cursor: sqlite3.Cursor) -> None:
     except sqlite3.DatabaseError as error:
         logger.error(f"There was an error during the creation of the statistics table: {error}")
         sys.exit()
+    except Exception as error:
+        logger.error(f"AN UNEXPECTED ERROR HAPPENED: {error}")
     else:
         logger.info("Database for question created successfully or already exist")  # TODO: log this two options separately
 
@@ -94,6 +100,8 @@ def read_file(quiz_name: str, format_of_dataset: str) -> list[dict] | None:
     except json.JSONDecodeError as error:
         logger.error(f"There was an error while processing JSON file: {error}")
         sys.exit()
+    except Exception as error:
+        logger.error(f"AN UNEXPECTED ERROR HAPPENED: {error}")
     else:
         logger.info("Questions from the file read successfully")
         return data_from_file
@@ -146,6 +154,8 @@ def insert_question(question: dict, quiz_name: str, cursor: sqlite3.Cursor) -> N
                 except sqlite3.DatabaseError as error:
                     logger.error(f"There was an error during the question's statistics insert query: {error}")
                     sys.exit()
+                except Exception as error:
+                    logger.error(f"AN UNEXPECTED ERROR HAPPENED: {error}")
                 else:
                     logging.info(f"Question number {question['id']}'s statistics inserted successfully")
             else:  # existing question was updated
@@ -159,6 +169,8 @@ def insert_question(question: dict, quiz_name: str, cursor: sqlite3.Cursor) -> N
                 except sqlite3.DatabaseError as error:
                     logger.error(f"There was an error during the question's statistics update query: {error}")
                     sys.exit()
+                except Exception as error:
+                    logger.error(f"AN UNEXPECTED ERROR HAPPENED: {error}")
                 else:
                     logging.info(f"Question numer {question['id']}'s statistics updated successfully")
 
@@ -183,7 +195,7 @@ def import_database(quiz_name: str, format_of_dataset:str):
         logger.error(f"There was an error with the database: {error}")
         sys.exit()
     except Exception as error:
-        logger.error(f"An unexpected error occurred: {str(error)}")
+        logger.error(f"AN UNEXPECTED ERROR HAPPENED: {error}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Import new set of questions into database")
