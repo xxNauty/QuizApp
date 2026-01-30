@@ -12,7 +12,7 @@ database/*
 logs/*
 !logs/.gitkeep
 
-todo.md
+notes.txt
 
 scripts/script_logs/import_new_database/*
 !scripts/script_logs/import_new_database/.gitkeep

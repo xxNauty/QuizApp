@@ -6,17 +6,17 @@ from dotenv import load_dotenv
 from typing import List, Dict, Optional
 
 from exception.NoDataFoundException import NoDataFoundError
+from database.get_list_of_tables import get_list_of_tables
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("main")
 load_dotenv()
 
 def read_database(quiz_name: str) -> Optional[List[Dict]]:
     try:
         #validation of the inputs
-        if not isinstance(quiz_name, str) or not quiz_name.isidentifier():
+        if not isinstance(quiz_name, str) or quiz_name not in get_list_of_tables():
             raise ValueError("Invalid table name provided")
 
-        #using with statement ensures the connection is automatically closed
         with sqlite3.connect(os.getenv("DATABASE_PATH")) as database_connection:
             database_connection.row_factory = sqlite3.Row
             cursor = database_connection.cursor()
@@ -37,6 +37,7 @@ def read_database(quiz_name: str) -> Optional[List[Dict]]:
         return None
     except Exception as error:
         logger.error(f"AN UNEXPECTED ERROR HAPPENED: {error}")
+        return None
     else:
         logger.info("Database read successfully")
         return data

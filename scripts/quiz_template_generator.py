@@ -6,12 +6,12 @@ from dotenv import load_dotenv
 
 logging.basicConfig(
     level=logging.INFO,
-    filename=f"scripts/script_logs/quiz_template_generator/{datetime.now().strftime("%Y_%m_%d")}_logs.log",
+    filename=os.getenv("LOGS_PATH") + datetime.now().strftime("%Y_%m_%d") + ".log",
     filemode='a',
-    format='%(asctime)s %(levelname)s %(name)s: %(message)s',
+    format=os.getenv("LOGS_FORMAT"),
     encoding='utf-8'
 )
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("script")
 load_dotenv()
 
 def generate() -> None:
@@ -69,7 +69,7 @@ def generate() -> None:
     except OSError as error:
         logger.error(f"{error}")
     except Exception as error:
-        logger.error(f"An unexpected error happened: {error}")
+        logger.error(f"AN UNEXPECTED ERROR HAPPENED: {error}")
     else:
         logger.info("Configuration file created and filled with data")
 
@@ -85,7 +85,7 @@ def generate() -> None:
     except OSError as error:
         logger.error(f"{error}")
     except Exception as error:
-        logger.error(f"An unexpected error happened: {error}")
+        logger.error(f"AN UNEXPECTED ERROR HAPPENED: {error}")
     else:
         logger.info("Database for questions created")
 
